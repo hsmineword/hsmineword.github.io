@@ -8,7 +8,7 @@
       margin: 0;
       height: 100%;
       overflow: hidden;
-      background: white;
+      background: black;
     }
     canvas {
       display: block;
@@ -69,7 +69,7 @@
       const y = star.x * sin + star.y * cos;
       ctx.beginPath();
       ctx.arc(x, y, star.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#000';
+      ctx.fillStyle = '#FFF';
       ctx.fill();
     }
 

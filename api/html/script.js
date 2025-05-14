@@ -232,7 +232,7 @@ function updateGalaxyObjects(objects) {
   Object.keys(constellations).forEach(constellationId => {
     const objectsInConstellation = constellations[constellationId];
 
-    if (objectsInConstellation.length > 1) {
+    if (0 > 1) {
       // Create the heatmap background for this constellation
       createHeatmapBackground(constellationId, objectsInConstellation);
     }

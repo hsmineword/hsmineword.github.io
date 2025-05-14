@@ -68,15 +68,17 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
+      console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+
     const el = obj._el;
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
-  requestAnimationFrame(draw);
+  requestAnimationFrame();
 }
-draw();
+();
 
 // Zoom and pan
 canvas.addEventListener('wheel', e => {
@@ -200,6 +202,8 @@ function updateGalaxyObjects(objects) {
 }
 
 function createMapElement(obj) {
+  console.log("[createMapElement] Creating element for:", obj.id, obj.map_name);
+
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
 
@@ -207,6 +211,8 @@ function createMapElement(obj) {
   img.src = obj.map_icon;
   img.width = 32;
   img.height = 32;
+  img.onload = () => console.log(`[Image Loaded] ${obj.map_name}: ${obj.map_icon}`);
+  img.onerror = () => console.warn(`[Image Error] ${obj.map_name}: ${obj.map_icon}`);
   wrapper.appendChild(img);
 
   const label = document.createElement('span');
@@ -215,23 +221,23 @@ function createMapElement(obj) {
 
   wrapper.addEventListener('click', () => {
     const interactionData = obj.interaction_on_click?.data;
+    console.log("[Wrapper Clicked] Embed data:", interactionData);
+
     if (window.createDiscordEmbed) {
+      console.log("[Embed Renderer] Found. Rendering...");
       window.createDiscordEmbed(interactionData || {});
     } else {
-      console.log('No embed renderer loaded yet.');
+      console.warn('[Embed Renderer] Not loaded yet.');
     }
   });
 
-  return wrapper;
-}
+  // Add style to debug positioning
+  wrapper.style.position = 'absolute';
+  wrapper.style.border = '1px solid red';
+  wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
-// it is outside shut the fuck up html
-function createDiscordEmbed(embedData) {
-  if (embedData) {
-    showDiscordEmbed(embedData);
-  } else {
-    console.log("No embed data provided!");
-  }
+  console.log("[createMapElement] Element created:", wrapper);
+  return wrapper;
 }
 
 

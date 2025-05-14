@@ -253,11 +253,8 @@ async function fetchGalaxyData() {
   }
 }
 
-// Function to start the data fetching
-function startGalaxyDataFetch() {
+(function startGalaxyDataFetch() {
   fetchGalaxyData();
   setInterval(fetchGalaxyData, 60000); // Set interval to fetch data every minute
-}
-
-// Call the function to start the process
-startGalaxyDataFetch(); // This should be at the end
+})();
+// end

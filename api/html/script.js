@@ -335,34 +335,67 @@ startGalaxyDataFetch(); // Call once at start, end
 
 
 
-
-function logChildrenArray() {
-  // Ensure the 'children' array exists and has data
-  if (!children || children.length === 0) {
-    console.log("No child objects found.");
-    return;
-  }
-
-  console.log("Logging child objects from the children array:");
-
-  // Iterate over each child in the array
-  children.forEach(child => {
-    // Log the basic child data (name, coordinates)
-    console.log(`Child Name: ${child.map_name}`);
-    console.log(`Coordinates: (${child.cords.x}, ${child.cords.y})`);
-
-    // If each child has a corresponding HTML element, log that too
-    if (child._el) {
-      console.log("Associated HTML Element:", child._el);
-      const img = child._el.querySelector('img');
-      if (img) {
-        console.log("Image Source: ", img.src); // Log the image source
-      }
-    } else {
-      console.log("No associated HTML element found for this child.");
-    }
-
     console.log("------");
-  });
+// Function to save galaxy data to localStorage
+function saveGalaxyDataToLocalStorage(objects) {
+  // Convert the objects to a JSON string to store in localStorage
+  const objectsJson = JSON.stringify(objects);
+
+  // Save the data to localStorage under a key, e.g., 'galaxyData'
+  localStorage.setItem('galaxyData', objectsJson);
+
+  console.log("Galaxy data saved to localStorage.");
 }
-logChildrenArray()
+
+// Function to save the data with HTML element info
+function saveDataWithHtmlElementInfo() {
+  const childDataWithElements = children.map(child => {
+    const el = child._el;
+
+    return {
+      id: child.id,
+      name: child.map_name,
+      coordinates: child.cords,
+      imageSrc: el.querySelector('img') ? el.querySelector('img').src : null,
+    };
+  });
+
+  // Save the processed data to localStorage
+  localStorage.setItem('childrenData', JSON.stringify(childDataWithElements));
+
+  console.log("Children data saved to localStorage with element information.");
+}
+
+// Function to fetch galaxy data and save it
+function fetchAndSaveGalaxyData() {
+  fetchGalaxyDataWrapper()
+    .then(jsonObjs => {
+      // Save data with HTML element info after fetching
+      saveDataWithHtmlElementInfo();
+    })
+    .catch(e => console.error("Error during data fetching:", e));
+}
+
+// Call the function to fetch and save galaxy data on an interval
+function startFetchingAndSavingGalaxyData() {
+  // Initial fetch and save
+  fetchAndSaveGalaxyData();
+
+  // Repeat the fetch and save every 60 seconds (60000 ms)
+  setInterval(fetchAndSaveGalaxyData, 60000);
+}
+
+// Function to save galaxy data in a loop
+function startSavingGalaxyData() {
+  // Assuming you have a `objects` array, save it repeatedly
+  setInterval(() => {
+    saveGalaxyDataToLocalStorage(objects);
+  }, 10000); // Save every 10 seconds (10000 ms), you can adjust the interval as needed
+}
+
+// Start fetching and saving galaxy data
+startFetchingAndSavingGalaxyData();
+
+// Start saving galaxy data with objects to localStorage repeatedly
+startSavingGalaxyData();
+    console.log("------");

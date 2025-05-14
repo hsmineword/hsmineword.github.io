@@ -1,5 +1,5 @@
 {
-  "id": "elysium",
+  "id": "MotherBase",
   "heatmaphex": "#ff6600",
   "cords": {
     "x": 0,
@@ -13,11 +13,11 @@
     "type": "discord_embed",
     "data": {
       "title": "Federation Space Station",
-      "description": "_**Astral Alliance** - Our home. Prosperity, liberty and democracy - Our way of life. But it doesn't come free: it is every man, woman and child's duty to protect our home, our culture, and our families..._",
+      "description": "**Astral Alliance** - Our home. Prosperity, liberty and democracy - Our way of life. But it doesn't come free: it is every man, woman and child's duty to protect our home, our culture, and our families...",
       "color": 5003487,
       "fields": [
         {
-          "name": "Security rating:",
+          "name": "Security rating",
           "value": "Secured and Protected"
         },
         {
@@ -26,8 +26,7 @@
         }
       ],
       "footer": {
-        "text": "Glory to the Federation",
-        "icon_url": "https://avatars.githubusercontent.com/u/211648262?v=4"
+        "text": "Glory to the Federation"
       },
       "image": {
         "url": "https://drmineword.github.io/1062014023656292354-database/files/images/ws-end_new/victory2.png"

@@ -237,9 +237,9 @@ wrapper.addEventListener('click', () => {
     console.log('No embed renderer loaded yet.');
   }
 });
-
-
-function startGalaxyDataFetch() {
+  
+  
+  function startGalaxyDataFetch() {
   fetchGalaxyData();
   setInterval(fetchGalaxyData, 60000);
 }

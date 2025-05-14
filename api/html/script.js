@@ -78,7 +78,7 @@ function draw() {
 
   requestAnimationFrame();
 }
-();
+draw();
 
 // Zoom and pan
 canvas.addEventListener('wheel', e => {

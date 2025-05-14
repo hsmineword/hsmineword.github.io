@@ -69,8 +69,9 @@
     ctx.fill();
   };
 
-  async function loadGroupsAndRender() {
+  async function renderMapOnce() {
     const url = "https://hsmineword.github.io/blob/main/api/groups.json?jam=" + Math.random();
+
     try {
       const res = await fetch(url);
       const groups = await res.json();
@@ -80,6 +81,7 @@
       let loadedStars = 0;
 
       groups.forEach(g => totalStars += g.children.length);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const group of groups) {
         if (!group.children || group.children.length === 0) {
@@ -116,6 +118,7 @@
             ctx.fillStyle = "#cccccc";
             ctx.arc(childX, childY, 3, 0, Math.PI * 2);
             ctx.fill();
+
           } catch (err) {
             console.warn(`Failed to load child ${childId}:`, err);
           }
@@ -136,13 +139,8 @@
     }
   }
 
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    loadGroupsAndRender();
-    requestAnimationFrame(animate);
-  }
-
-  animate();
+  // Run once on page load
+  renderMapOnce();
 </script>
 
 </body>

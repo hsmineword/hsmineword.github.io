@@ -40,71 +40,6 @@ for (let i = 0; i < numStars; i++) {
 
 const mapObjects = new Map();
 
-function draw() {
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
-  ctx.scale(zoom, zoom);
-
-  const time = Date.now() / 10000;
-  const cos = Math.cos(time);
-  const sin = Math.sin(time);
-
-  for (const star of stars) {
-    const x = star.x * cos - star.y * sin;
-    const y = star.x * sin + star.y * cos;
-    ctx.beginPath();
-    ctx.arc(x, y, star.r, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff';
-    ctx.fill();
-  }
-
-  for (const [id, obj] of mapObjects) {
-    const x = obj._pos.x * cos - obj._pos.y * sin;
-    const y = obj._pos.x * sin + obj._pos.y * cos;
-
-    const screenX = x * zoom + width / 2 + offsetX;
-    const screenY = y * zoom + height / 2 + offsetY;
-
-      // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
-
-    const el = obj._el;
-    el.style.left = `${screenX}px`;
-    el.style.top = `${screenY}px`;
-    el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
-  }
-
-  requestAnimationFrame(draw);
-}
-draw();
-
-// Zoom and pan
-canvas.addEventListener('wheel', e => {
-  e.preventDefault();
-  const zoomFactor = 1.1;
-  zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
-});
-canvas.addEventListener('mousedown', e => {
-  drag = true;
-  startX = e.clientX;
-  startY = e.clientY;
-});
-canvas.addEventListener('mousemove', e => {
-  if (!drag) return;
-  offsetX += (e.clientX - startX);
-  offsetY += (e.clientY - startY);
-  startX = e.clientX;
-  startY = e.clientY;
-});
-canvas.addEventListener('mouseup', () => drag = false);
-canvas.addEventListener('mouseleave', () => drag = false);
-window.addEventListener('resize', () => {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-});
-
 // Galaxy loader
 function showLoading(state) {
   let el = document.getElementById('galaxy-loading');
@@ -132,15 +67,6 @@ function showLoading(state) {
   }
 }
 
-// Load embed renderer
-function loadEmbedRenderer() {
-  const s = document.createElement('script');
-  s.src = `https://hsmineword.github.io/api/html/embed.js?jam=${Math.random()}`;
-  s.async = true;
-  document.head.appendChild(s);
-}
-loadEmbedRenderer();
-
 // Load galaxy data
 async function fetchGalaxyData() {
   showLoading(true);
@@ -156,18 +82,13 @@ async function fetchGalaxyData() {
   }
 }
 
-
-// Galaxy object creation log
 function createMapElement(obj) {
   console.log('Creating element for:', obj.map_name);
-
-
 
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
   wrapper.style.position = 'absolute';
-  // wrapper.style.border = '1px solid red'; // outline for planets
-  wrapper.style.zIndex = '100'; // Ensure it's not under canvas
+  wrapper.style.zIndex = '100';
 
   const img = document.createElement('img');
   img.src = obj.map_icon;
@@ -183,27 +104,20 @@ function createMapElement(obj) {
 
   wrapper.addEventListener('click', () => {
     const interactionData = obj.interaction_on_click?.data;
-    console.log("[Wrapper Clicked] Embed data:", interactionData);
-
     if (window.createDiscordEmbed) {
-      console.log("[Embed Renderer] Found. Rendering...");
       window.createDiscordEmbed(interactionData || {});
     } else {
       console.warn('[Embed Renderer] Not loaded yet.');
     }
   });
 
-  // Save element to map for tracking
   mapObjects.set(obj.id, { _el: wrapper, ...obj });
 
-  console.log("[createMapElement] Element created:", wrapper);
-  console.log('Element created:', wrapper);
-document.body.appendChild(wrapper);  // Append to the body if it's not added elsewhere
+  document.body.appendChild(wrapper);
 
   return wrapper;
 }
 
-// Track map updates and objects
 function updateGalaxyObjects(objects) {
   const nextMap = new Map();
   const anvils = {};
@@ -212,8 +126,6 @@ function updateGalaxyObjects(objects) {
   console.log("[updateGalaxyObjects] Processing objects:", objects.length, "objects found");
 
   for (const obj of objects) {
-    console.log("[updateGalaxyObjects] Processing object:", obj.map_name);
-
     if (obj.map_is_anvil) {
       anvils[obj.map_constellation_id] = obj;
     } else {
@@ -230,37 +142,53 @@ function updateGalaxyObjects(objects) {
     }
   }
 
-  const all = [...Object.values(anvils), ...children];
-  console.log("[updateGalaxyObjects] Total objects to update:", all.length);
+  const territories = new Map();
 
-  all.forEach(obj => {
-    const el = mapObjects.has(obj.id) ? mapObjects.get(obj.id)._el : createMapElement(obj);
-    obj._el = el;
-    obj._pos = { x: obj.cords.x, y: obj.cords.y };
-    nextMap.set(obj.id, obj);
-  });
-
-  // Debug: Check mapObjects before cleanup
-  console.log("[updateGalaxyObjects] Map objects before cleanup:", Array.from(mapObjects.keys()));
-
-  // Clean up removed elements
-  for (const [id, entry] of mapObjects) {
-    if (!nextMap.has(id)) {
-      console.log("[updateGalaxyObjects] Removing object from map:", entry._el);
-      entry._el.remove();
+  // Organize objects by constellation
+  for (const [id, obj] of mapObjects) {
+    if (obj.map_constellation_id && !obj.map_is_anvil) {
+      if (!territories.has(obj.map_constellation_id)) {
+        territories.set(obj.map_constellation_id, []);
+      }
+      territories.get(obj.map_constellation_id).push(obj);
     }
   }
 
-  // Debug: Check mapObjects after cleanup
-  console.log("[updateGalaxyObjects] Map objects after cleanup:", Array.from(nextMap.keys()));
+  for (const [constellationId, positions] of territories) {
+    const color = getHeatmapColor(constellationId);
 
-  // Replace map
-  mapObjects.clear();
-  for (const [id, entry] of nextMap) {
-    mapObjects.set(id, entry);
+    // Draw heatmap for each territory
+    for (const obj of positions) {
+      const x = obj._pos.x;
+      const y = obj._pos.y;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 100, 0, Math.PI * 2); // Adjust size based on your needs
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
   }
 
-  console.log("[updateGalaxyObjects] Final map objects:", Array.from(mapObjects.keys()));
+  nextMap.clear();
+  for (const [id, entry] of territories) {
+    nextMap.set(id, entry);
+  }
+}
+
+function getHeatmapColor(constellationId) {
+  for (const [id, obj] of mapObjects) {
+    if (obj.map_constellation_id === constellationId && obj.heatmaphex) {
+      return hexToRGBA(obj.heatmaphex, 0.25); // Apply transparency
+    }
+  }
+  return 'rgba(255, 255, 255, 0.1)'; // Fallback to white if no color found
+}
+
+function hexToRGBA(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 // Track each draw cycle and object placement
@@ -286,15 +214,13 @@ function draw() {
     ctx.fill();
   }
 
-  // Draw map objects
+  // Draw map objects (planets, labels, etc.)
   for (const [id, obj] of mapObjects) {
     const x = obj._pos.x * cos - obj._pos.y * sin;
     const y = obj._pos.x * sin + obj._pos.y * cos;
 
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
-
-    // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
     el.style.left = `${screenX}px`;
@@ -307,11 +233,7 @@ function draw() {
 
 draw(); // Start the drawing loop
 
-
-
-
-  
-// Galaxy data fetching logic
+// Load and fetch galaxy data
 function fetchGalaxyDataWrapper() {
   showLoading(true);
 
@@ -323,10 +245,9 @@ function fetchGalaxyDataWrapper() {
     .finally(() => showLoading(false));
 }
 
-// Start fetching immediately and set interval
 function startGalaxyDataFetch() {
   fetchGalaxyDataWrapper();
   setInterval(fetchGalaxyDataWrapper, 60000); // every minute
 }
 
-startGalaxyDataFetch(); // Call once at start, end
+startGalaxyDataFetch(); // Call once at start

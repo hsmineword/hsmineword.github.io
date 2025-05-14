@@ -71,8 +71,8 @@ function draw() {
       // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
-   // el.style.left = `${screenX}px`;
-   // el.style.top = `${screenY}px`;
+    el.style.left = `${screenX}px`;
+    el.style.top = `${screenY}px`;
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
@@ -164,34 +164,22 @@ function createMapElement(obj) {
 
 
   const wrapper = document.createElement('div');
-wrapper.className = 'map-object';
-wrapper.style.position = 'absolute';
-wrapper.style.zIndex = '100';
-wrapper.style.transformOrigin = 'top left'; // Ensure consistent scaling
+  wrapper.className = 'map-object';
+  wrapper.style.position = 'absolute';
+  // wrapper.style.border = '1px solid red'; // outline for planets
+  wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
-const inner = document.createElement('div');
-inner.className = 'map-object-inner';
-inner.style.display = 'flex';
-inner.style.flexDirection = 'column';
-inner.style.alignItems = 'center';
+  const img = document.createElement('img');
+  img.src = obj.map_icon;
+  img.width = 32;
+  img.height = 32;
+  img.onload = () => console.log(`[Image Loaded] ${obj.map_name}: ${obj.map_icon}`);
+  img.onerror = () => console.warn(`[Image Error] ${obj.map_name}: ${obj.map_icon}`);
+  wrapper.appendChild(img);
 
-const img = document.createElement('img');
-img.src = obj.map_icon;
-img.width = 32;
-img.height = 32;
-img.onload = () => console.log(`[Image Loaded] ${obj.map_name}: ${obj.map_icon}`);
-img.onerror = () => console.warn(`[Image Error] ${obj.map_name}: ${obj.map_icon}`);
-
-const label = document.createElement('span');
-label.textContent = obj.map_name;
-label.style.color = 'white';
-label.style.fontSize = '12px';
-label.style.marginTop = '2px';
-
-inner.appendChild(img);
-inner.appendChild(label);
-wrapper.appendChild(inner);
-
+  const label = document.createElement('span');
+  label.textContent = obj.map_name;
+  wrapper.appendChild(label);
 
   wrapper.addEventListener('click', () => {
     const interactionData = obj.interaction_on_click?.data;
@@ -309,9 +297,9 @@ function draw() {
     // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
-  el.style.left = `${screenX}px`;
-   el.style.top = `${screenY}px`;
-    el.style.transform = `translate(${screenX}px, ${screenY}px) scale(${Math.max(0.5, zoom)})`;
+    el.style.left = `${screenX}px`;
+    el.style.top = `${screenY}px`;
+    el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
   requestAnimationFrame(draw);

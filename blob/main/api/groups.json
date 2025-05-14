@@ -10,7 +10,7 @@
       "description": "Main control node of the home federation.",
       "discoveredAt": 1670000000000
     },
-    "children": []
+    "children": ["test"]
   },
   {
     "type": "other",

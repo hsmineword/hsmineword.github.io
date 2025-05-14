@@ -309,8 +309,8 @@ function draw() {
     // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
-    // el.style.left = `${screenX}px`;
-   // el.style.top = `${screenY}px`;
+  el.style.left = `${screenX}px`;
+   el.style.top = `${screenY}px`;
     el.style.transform = `translate(${screenX}px, ${screenY}px) scale(${Math.max(0.5, zoom)})`;
   }
 

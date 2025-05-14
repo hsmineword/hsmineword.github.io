@@ -9,18 +9,44 @@
       padding: 0;
       background-color: black;
       overflow: hidden;
+      font-family: monospace;
+      color: #00ffcc;
     }
+
+    #loadingOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 10;
+    }
+
     canvas {
       display: block;
+      position: absolute;
+      top: 0; left: 0;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
+
+<div id="loadingOverlay">
+  <div id="loadingText">Initializing Galactic Map...</div>
+</div>
+
 <canvas id="galacticMap"></canvas>
 
 <script>
   const canvas = document.getElementById("galacticMap");
   const ctx = canvas.getContext("2d");
+  const loadingText = document.getElementById("loadingText");
+  const overlay = document.getElementById("loadingOverlay");
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -43,23 +69,30 @@
     ctx.fill();
   };
 
-  async function loadGroups() {
+  async function loadGroupsAndRender() {
     const url = "https://hsmineword.github.io/blob/main/api/groups.json?jam=" + Math.random();
     try {
       const res = await fetch(url);
       const groups = await res.json();
       console.log("Groups loaded:", groups);
 
+      let totalStars = 0;
+      let loadedStars = 0;
+
+      groups.forEach(g => totalStars += g.children.length);
+
       for (const group of groups) {
-        console.log(`Loading group: ${group.id}`);
+        if (!group.children || group.children.length === 0) {
+          console.log(`Skipping group ${group.id} — no children`);
+          continue;
+        }
+
         const groupX = centerX() + group.radius;
         const groupY = centerY();
 
-        // Draw vortex fog
         const vortexSize = Math.max(200, group.children.length * 40 + 100);
         drawFog(groupX, groupY, vortexSize, group.color);
 
-        // Draw center object
         if (group.center) {
           ctx.beginPath();
           ctx.fillStyle = group.color;
@@ -74,7 +107,6 @@
             const obj = await res.json();
             console.log(`Loaded child ${childId}:`, obj);
 
-            // Draw child point (simple preview — later you’ll orbit them)
             const angle = (Date.now() - obj.discoveredAt) / 10000000;
             const orbitDist = obj.distance || 100;
             const childX = groupX + Math.cos(angle) * orbitDist;
@@ -87,20 +119,31 @@
           } catch (err) {
             console.warn(`Failed to load child ${childId}:`, err);
           }
+
+          loadedStars++;
+          loadingText.innerText = `Loading stars: ${loadedStars} / ${totalStars} fetched`;
         }
       }
+
+      loadingText.innerText = "Synchronizing Star Alliance...";
+      setTimeout(() => {
+        overlay.style.display = "none";
+      }, 1500);
+
     } catch (err) {
       console.error("Failed to load groups.json:", err);
+      loadingText.innerText = "Failed to load galactic map.";
     }
   }
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    loadGroups();
+    loadGroupsAndRender();
     requestAnimationFrame(animate);
   }
 
   animate();
 </script>
+
 </body>
 </html>

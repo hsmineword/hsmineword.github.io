@@ -68,7 +68,7 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
-      console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+      // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
     el.style.left = `${screenX}px`;

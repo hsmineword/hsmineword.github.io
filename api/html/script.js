@@ -169,6 +169,9 @@ function createMapElement(obj) {
   // wrapper.style.border = '1px solid red'; // outline for planets
   wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
+  wrapper.setAttribute('custompayload', JSON.stringify(obj));
+  
+
   const img = document.createElement('img');
   img.src = obj.map_icon;
   img.width = 32;

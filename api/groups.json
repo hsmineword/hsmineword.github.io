@@ -10,10 +10,7 @@
       "description": "Main control node of the home federation.",
       "discoveredAt": 1670000000000
     },
-    "children": [
-      "hades-prime",
-      "elysium"
-    ]
+    "children": []
   },
   {
     "type": "other",
@@ -26,10 +23,7 @@
       "description": "Enemy stronghold brimming with hostile activity.",
       "discoveredAt": 1695000000000
     },
-    "children": [
-      "inferno",
-      "hellforge"
-    ]
+    "children": []
   },
   {
     "type": "other",
@@ -42,19 +36,13 @@
       "description": "Central hub for allied fleet coordination.",
       "discoveredAt": 1688000000000
     },
-    "children": [
-      "aethergate",
-      "nova-dome"
-    ]
+    "children": []
   },
   {
     "type": "events_red",
     "id": "random-red-events",
     "color": "#ff5555",
     "radius": -1,
-    "children": [
-      "event-burst-1",
-      "event-surge-4"
-    ]
+    "children": []
   }
 ]

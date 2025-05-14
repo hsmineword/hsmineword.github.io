@@ -39,15 +39,6 @@ for (let i = 0; i < numStars; i++) {
 }
 
 const mapObjects = new Map();
-const territories = new Map(); // Store territories by constellation ID
-
-// Function to generate hex color with opacity
-function hexToRGBA(hex, alpha) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 
 function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -61,7 +52,6 @@ function draw() {
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
-  // Draw stars
   for (const star of stars) {
     const x = star.x * cos - star.y * sin;
     const y = star.x * sin + star.y * cos;
@@ -71,28 +61,14 @@ function draw() {
     ctx.fill();
   }
 
-  // Draw territories (heatmap) around anvil center
-  for (const [constellationId, positions] of territories) {
-    const color = getHeatmapColor(constellationId);
-
-    for (const pos of positions) {
-      const x = pos.x * cos - pos.y * sin;
-      const y = pos.x * sin + pos.y * cos;
-
-      ctx.beginPath();
-      ctx.arc(x, y, 100, 0, Math.PI * 2); // Territory radius
-      ctx.fillStyle = color;
-      ctx.fill();
-    }
-  }
-
-  // Draw map objects (planets/objects)
   for (const [id, obj] of mapObjects) {
     const x = obj._pos.x * cos - obj._pos.y * sin;
     const y = obj._pos.x * sin + obj._pos.y * cos;
 
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
+
+      // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
     el.style.left = `${screenX}px`;
@@ -102,22 +78,19 @@ function draw() {
 
   requestAnimationFrame(draw);
 }
-
 draw();
 
-// Handle zoom and pan on canvas
+// Zoom and pan
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
   zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
 });
-
 canvas.addEventListener('mousedown', e => {
   drag = true;
   startX = e.clientX;
   startY = e.clientY;
 });
-
 canvas.addEventListener('mousemove', e => {
   if (!drag) return;
   offsetX += (e.clientX - startX);
@@ -125,10 +98,8 @@ canvas.addEventListener('mousemove', e => {
   startX = e.clientX;
   startY = e.clientY;
 });
-
 canvas.addEventListener('mouseup', () => drag = false);
 canvas.addEventListener('mouseleave', () => drag = false);
-
 window.addEventListener('resize', () => {
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
@@ -161,7 +132,16 @@ function showLoading(state) {
   }
 }
 
-// Fetch Galaxy Data
+// Load embed renderer
+function loadEmbedRenderer() {
+  const s = document.createElement('script');
+  s.src = `https://hsmineword.github.io/api/html/embed.js?jam=${Math.random()}`;
+  s.async = true;
+  document.head.appendChild(s);
+}
+loadEmbedRenderer();
+
+// Load galaxy data
 async function fetchGalaxyData() {
   showLoading(true);
   try {
@@ -176,22 +156,18 @@ async function fetchGalaxyData() {
   }
 }
 
-function loadEmbedRenderer() {
-  const s = document.createElement('script');
-  s.src = `https://hsmineword.github.io/api/html/embed.js?jam=${Math.random()}`;
-  s.async = true;
-  document.head.appendChild(s);
-}
-loadEmbedRenderer();
 
-// Create map objects (planets, etc.)
+// Galaxy object creation log
 function createMapElement(obj) {
   console.log('Creating element for:', obj.map_name);
+
+
 
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
   wrapper.style.position = 'absolute';
-  wrapper.style.zIndex = '100';
+  // wrapper.style.border = '1px solid red'; // outline for planets
+  wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
   const img = document.createElement('img');
   img.src = obj.map_icon;
@@ -221,12 +197,13 @@ function createMapElement(obj) {
   mapObjects.set(obj.id, { _el: wrapper, ...obj });
 
   console.log("[createMapElement] Element created:", wrapper);
-  document.body.appendChild(wrapper);  // Append to the body if it's not added elsewhere
+  console.log('Element created:', wrapper);
+document.body.appendChild(wrapper);  // Append to the body if it's not added elsewhere
 
   return wrapper;
 }
 
-// Update galaxy objects
+// Track map updates and objects
 function updateGalaxyObjects(objects) {
   const nextMap = new Map();
   const anvils = {};
@@ -234,8 +211,9 @@ function updateGalaxyObjects(objects) {
 
   console.log("[updateGalaxyObjects] Processing objects:", objects.length, "objects found");
 
-  // Group objects by anvil and child relationships
   for (const obj of objects) {
+    console.log("[updateGalaxyObjects] Processing object:", obj.map_name);
+
     if (obj.map_is_anvil) {
       anvils[obj.map_constellation_id] = obj;
     } else {
@@ -243,28 +221,17 @@ function updateGalaxyObjects(objects) {
     }
   }
 
-  // Adjust child positions based on anvil positions
   for (const child of children) {
     const anvil = anvils[child.map_constellation_id];
     if (anvil) {
-      const blend = 0.5 + Math.random() * 0.2; // Blending
+      const blend = 0.5 + Math.random() * 0.2;
       child.cords.x = anvil.cords.x + (child.cords.x - anvil.cords.x) * blend;
       child.cords.y = anvil.cords.y + (child.cords.y - anvil.cords.y) * blend;
     }
   }
 
-  // Track territory objects (group by constellation ID)
-  for (const child of children) {
-    const anvil = anvils[child.map_constellation_id];
-    if (anvil) {
-      if (!territories.has(child.map_constellation_id)) {
-        territories.set(child.map_constellation_id, []);
-      }
-      territories.get(child.map_constellation_id).push(child.cords);
-    }
-  }
-
   const all = [...Object.values(anvils), ...children];
+  console.log("[updateGalaxyObjects] Total objects to update:", all.length);
 
   all.forEach(obj => {
     const el = mapObjects.has(obj.id) ? mapObjects.get(obj.id)._el : createMapElement(obj);
@@ -273,24 +240,93 @@ function updateGalaxyObjects(objects) {
     nextMap.set(obj.id, obj);
   });
 
-  // Cleanup removed elements
+  // Debug: Check mapObjects before cleanup
+  console.log("[updateGalaxyObjects] Map objects before cleanup:", Array.from(mapObjects.keys()));
+
+  // Clean up removed elements
   for (const [id, entry] of mapObjects) {
     if (!nextMap.has(id)) {
+      console.log("[updateGalaxyObjects] Removing object from map:", entry._el);
       entry._el.remove();
     }
   }
 
-  // Replace map with updated entries
+  // Debug: Check mapObjects after cleanup
+  console.log("[updateGalaxyObjects] Map objects after cleanup:", Array.from(nextMap.keys()));
+
+  // Replace map
   mapObjects.clear();
   for (const [id, entry] of nextMap) {
     mapObjects.set(id, entry);
   }
+
+  console.log("[updateGalaxyObjects] Final map objects:", Array.from(mapObjects.keys()));
 }
 
-// Start fetching data immediately and set interval
+// Track each draw cycle and object placement
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
+  ctx.scale(zoom, zoom);
+
+  const time = Date.now() / 10000;
+  const cos = Math.cos(time);
+  const sin = Math.sin(time);
+
+  // Draw stars
+  for (const star of stars) {
+    const x = star.x * cos - star.y * sin;
+    const y = star.x * sin + star.y * cos;
+    ctx.beginPath();
+    ctx.arc(x, y, star.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  }
+
+  // Draw map objects
+  for (const [id, obj] of mapObjects) {
+    const x = obj._pos.x * cos - obj._pos.y * sin;
+    const y = obj._pos.x * sin + obj._pos.y * cos;
+
+    const screenX = x * zoom + width / 2 + offsetX;
+    const screenY = y * zoom + height / 2 + offsetY;
+
+    // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+
+    const el = obj._el;
+    el.style.left = `${screenX}px`;
+    el.style.top = `${screenY}px`;
+    el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
+  }
+
+  requestAnimationFrame(draw);
+}
+
+draw(); // Start the drawing loop
+
+
+
+
+  
+// Galaxy data fetching logic
+function fetchGalaxyDataWrapper() {
+  showLoading(true);
+
+  fetch('https://hsmineword.github.io/elements.json?jam=' + Math.random(), { cache: 'no-store' })
+    .then(res => res.json())
+    .then(urls => Promise.all(urls.map(url => fetch(url).then(r => r.json()))))
+    .then(jsonObjs => updateGalaxyObjects(jsonObjs))
+    .catch(e => console.error("Galaxy data error:", e))
+    .finally(() => showLoading(false));
+}
+
+// Start fetching immediately and set interval
 function startGalaxyDataFetch() {
-  fetchGalaxyData();
-  setInterval(fetchGalaxyData, 60000); // Fetch every minute
+  fetchGalaxyDataWrapper();
+  setInterval(fetchGalaxyDataWrapper, 60000); // every minute
 }
 
-startGalaxyDataFetch(); // Initial call
+startGalaxyDataFetch(); // Call once at start, end

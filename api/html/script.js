@@ -238,23 +238,22 @@ wrapper.addEventListener('click', () => {
   }
 });
   
-// Your galaxy data fetching logic
-async function fetchGalaxyData() {
+// Galaxy data fetching logic
+function fetchGalaxyDataWrapper() {
   showLoading(true);
-  try {
-    const res = await fetch(`https://hsmineword.github.io/elements.json?jam=${Math.random()}`, { cache: 'no-store' });
-    const urls = await res.json();
-    const jsonObjs = await Promise.all(urls.map(url => fetch(url).then(r => r.json())));
-    updateGalaxyObjects(jsonObjs);
-  } catch (e) {
-    console.error("Galaxy data error:", e);
-  } finally {
-    showLoading(false);
-  }
+
+  fetch('https://hsmineword.github.io/elements.json?jam=' + Math.random(), { cache: 'no-store' })
+    .then(res => res.json())
+    .then(urls => Promise.all(urls.map(url => fetch(url).then(r => r.json()))))
+    .then(jsonObjs => updateGalaxyObjects(jsonObjs))
+    .catch(e => console.error("Galaxy data error:", e))
+    .finally(() => showLoading(false));
 }
 
-(function startGalaxyDataFetch() {
-  fetchGalaxyData();
-  setInterval(fetchGalaxyData, 60000); // Set interval to fetch data every minute
-})();
-// end
+// Start fetching immediately and set interval
+function startGalaxyDataFetch() {
+  fetchGalaxyDataWrapper();
+  setInterval(fetchGalaxyDataWrapper, 60000); // every minute
+}
+
+startGalaxyDataFetch(); // Call once at start, end

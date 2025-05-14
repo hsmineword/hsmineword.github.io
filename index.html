@@ -20,44 +20,43 @@
 
 <script>
   const canvas = document.getElementById('galaxy');
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
 
-  let zoom = 1;
-  let offsetX = 0, offsetY = 0;
-  let drag = false;
-  let startX, startY;
+let zoom = 1;
+let offsetX = 0, offsetY = 0;
+let drag = false;
+let startX, startY;
 
-  const stars = [];
-  const numStars = 5500;
-  const seed = Math.floor(Date.now() / 1000);
+const stars = [];
+const numStars = 500;
+const seed = Math.floor(Date.now() / 1000);
 
-  function seededRandom(seed) {
-    // xorshift32
-    return function() {
-      seed ^= seed << 13;
-      seed ^= seed >> 17;
-      seed ^= seed << 5;
-      return ((seed < 0 ? ~seed + 1 : seed) % 1000) / 1000;
-    }
+function seededRandom(seed) {
+  // xorshift32
+  return function() {
+    seed ^= seed << 13;
+    seed ^= seed >> 17;
+    seed ^= seed << 5;
+    return ((seed < 0 ? ~seed + 1 : seed) % 1000) / 1000;
   }
+}
 
-  const rand = seededRandom(seed);
+const rand = seededRandom(seed);
 
-  for (let i = 0; i < numStars; i++) {
-    stars.push({
-      x: (rand() - 0.5) * 4000,
-      y: (rand() - 0.5) * 4000,
-      r: rand() * 1.5 + 0.5
-    });
-  }
+for (let i = 0; i < numStars; i++) {
+  stars.push({
+    x: (rand() - 0.5) * 4000,
+    y: (rand() - 0.5) * 4000,
+    r: rand() * 1.5 + 0.5
+  });
+}
 
-  function draw() {
+function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  // Fill the entire canvas with black before drawing the stars
-  ctx.fillStyle = '#000';  // Set background to black
-  ctx.fillRect(0, 0, width, height);  // Fill canvas with black
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, width, height); // Fill canvas with black
 
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
@@ -70,7 +69,6 @@
     const x = star.x * cos - star.y * sin;
     const y = star.x * sin + star.y * cos;
 
-    // Set the star color to white
     ctx.beginPath();
     ctx.arc(x, y, star.r, 0, Math.PI * 2);
     ctx.fillStyle = '#fff';  // White stars
@@ -80,40 +78,62 @@
   requestAnimationFrame(draw);
 }
 
+draw();
 
+// Zoom handling
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const zoomFactor = 1.1;
+  zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
+});
 
-  draw();
+// Drag handling
+canvas.addEventListener('mousedown', e => {
+  drag = true;
+  startX = e.clientX;
+  startY = e.clientY;
+});
 
-  // Zoom handling
-  canvas.addEventListener('wheel', e => {
-    e.preventDefault();
-    const zoomFactor = 1.1;
-    zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
-  });
+canvas.addEventListener('mousemove', e => {
+  if (!drag) return;
+  offsetX += (e.clientX - startX);
+  offsetY += (e.clientY - startY);
+  startX = e.clientX;
+  startY = e.clientY;
+});
 
-  // Drag handling
-  canvas.addEventListener('mousedown', e => {
-    drag = true;
-    startX = e.clientX;
-    startY = e.clientY;
-  });
+canvas.addEventListener('mouseup', () => drag = false);
+canvas.addEventListener('mouseleave', () => drag = false);
 
-  canvas.addEventListener('mousemove', e => {
-    if (!drag) return;
-    offsetX += (e.clientX - startX);
-    offsetY += (e.clientY - startY);
-    startX = e.clientX;
-    startY = e.clientY;
-  });
+// Resize
+window.addEventListener('resize', () => {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+});
 
-  canvas.addEventListener('mouseup', () => drag = false);
-  canvas.addEventListener('mouseleave', () => drag = false);
+// Fetch data every minute
+const fetchData = async () => {
+  try {
+    const response = await fetch('https://hsmineword.github.io/elements.json?jam=' + Math.random());
+    const data = await response.json();
+    
+    console.log('Fetched data:', data);
 
-  // Resize
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
+    // If data contains an array of URLs, you can fetch them and log their contents
+    if (Array.isArray(data)) {
+      for (const url of data) {
+        const urlResponse = await fetch(url);
+        const urlData = await urlResponse.json();
+        console.log('Data from URL:', urlData);
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+// Call fetchData every minute (60,000 ms)
+setInterval(fetchData, 60000);
 </script>
 </body>
 </html>

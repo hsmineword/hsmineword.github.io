@@ -238,11 +238,32 @@ wrapper.addEventListener('click', () => {
   }
 });
   
-  
-  function startGalaxyDataFetch() {
-  fetchGalaxyData();
-  setInterval(fetchGalaxyData, 60000);
-}
+  // Assume you have fetchGalaxyData function defined somewhere above this
+  function fetchGalaxyData() {
+    // Your logic for fetching galaxy data
+    console.log('Fetching galaxy data...');
+  }
 
-// Call startGalaxyDataFetch when you're ready to begin fetching
-startGalaxyDataFetch();
+ // Function to fetch galaxy data
+  function fetchGalaxyData() {
+    showLoading(true);
+    try {
+      const res = await fetch(`https://hsmineword.github.io/elements.json?jam=${Math.random()}`, { cache: 'no-store' });
+      const urls = await res.json();
+      const jsonObjs = await Promise.all(urls.map(url => fetch(url).then(r => r.json())));
+      updateGalaxyObjects(jsonObjs);
+    } catch (e) {
+      console.error("Galaxy data error:", e);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  // Start fetching the galaxy data on load and every 60 seconds after that
+  function startGalaxyDataFetch() {
+    fetchGalaxyData();
+    setInterval(fetchGalaxyData, 60000);
+  }
+
+  // Call the startGalaxyDataFetch function to begin fetching data
+  startGalaxyDataFetch();

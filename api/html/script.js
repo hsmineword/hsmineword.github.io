@@ -335,28 +335,30 @@ function startGalaxyDataFetch() {
 startGalaxyDataFetch(); // Call once at start, end
 
 
-function loadHeatmapScript() {
+
+function loadTooCloseScript() {
+  const randomJam = Math.random().toString(36).substring(2, 10); // Generate random string
   const script = document.createElement('script');
-  const randomJam = Math.random().toString(36).substring(2, 10); // random string
-  script.src = `https://hsmineword.github.io/api/html/heatmap.js?jam=${randomJam}`;
+  script.src = `https://hsmineword.github.io/api/html/tooclose.js?jam=${randomJam}`;
   script.type = 'text/javascript';
   script.async = true;
 
   script.onload = function () {
-    console.log('[HeatmapLoader] heatmap.js loaded successfully.');
-    if (typeof renderConstellationHeatmaps === 'function') {
-      console.log('[HeatmapLoader] Executing renderConstellationHeatmaps()...');
-      renderConstellationHeatmaps();
+    console.log('[TooCloseScriptLoader] tooclose.js loaded successfully.');
+
+    if (typeof setupforheat === 'function') {
+      console.log('[TooCloseScriptLoader] Executing setupforheat()...');
+      setupforheat();  // Execute the setupforheat function after the script is loaded
     } else {
-      console.warn('[HeatmapLoader] renderConstellationHeatmaps() not found after load.');
+      console.warn('[TooCloseScriptLoader] setupforheat() not found after load.');
     }
   };
 
   script.onerror = function () {
-    console.error('[HeatmapLoader] Failed to load heatmap.js.');
+    console.error('[TooCloseScriptLoader] Failed to load tooclose.js.');
   };
 
   document.head.appendChild(script);
 }
 
-loadHeatmapScript();
+loadTooCloseScript();

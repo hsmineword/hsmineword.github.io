@@ -238,7 +238,7 @@ wrapper.addEventListener('click', () => {
   }
 });
   
- // Function to fetch galaxy data (make it async)
+// Your galaxy data fetching logic
 async function fetchGalaxyData() {
   showLoading(true);
   try {
@@ -253,11 +253,11 @@ async function fetchGalaxyData() {
   }
 }
 
-// Start fetching the galaxy data on load and every 60 seconds after that
+// Function to start the data fetching
 function startGalaxyDataFetch() {
   fetchGalaxyData();
-  setInterval(fetchGalaxyData, 60000);
+  setInterval(fetchGalaxyData, 60000); // Set interval to fetch data every minute
 }
 
-// Call the startGalaxyDataFetch function to begin fetching data
-startGalaxyDataFetch();
+// Call the function to start the process
+startGalaxyDataFetch(); // This should be at the end

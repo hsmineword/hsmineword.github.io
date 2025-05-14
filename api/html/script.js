@@ -330,3 +330,39 @@ function startGalaxyDataFetch() {
 }
 
 startGalaxyDataFetch(); // Call once at start, end
+
+
+
+
+
+
+function logChildrenArray() {
+  // Ensure the 'children' array exists and has data
+  if (!children || children.length === 0) {
+    console.log("No child objects found.");
+    return;
+  }
+
+  console.log("Logging child objects from the children array:");
+
+  // Iterate over each child in the array
+  children.forEach(child => {
+    // Log the basic child data (name, coordinates)
+    console.log(`Child Name: ${child.map_name}`);
+    console.log(`Coordinates: (${child.cords.x}, ${child.cords.y})`);
+
+    // If each child has a corresponding HTML element, log that too
+    if (child._el) {
+      console.log("Associated HTML Element:", child._el);
+      const img = child._el.querySelector('img');
+      if (img) {
+        console.log("Image Source: ", img.src); // Log the image source
+      }
+    } else {
+      console.log("No associated HTML element found for this child.");
+    }
+
+    console.log("------");
+  });
+}
+logChildrenArray()

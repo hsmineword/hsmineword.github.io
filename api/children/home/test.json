@@ -13,7 +13,7 @@
         "type": "discord_embed",
         "data": {
             "title": "Yellow Star Sytem",
-            "description": "Yellow Stars contain numerous habitable planets and are great for building base infrastructure. Each Empire is assigned its own Yellow Star to establish its base of operations.\nYellow Stars are combat safe. There is no combat between player forces. Ships lost to combat against Cerberus will safely return to a colonized planet.",
+            "description": "**Yellow Stars** contain numerous habitable planets and are great for building base infrastructure. Each Empire is assigned its own Yellow Star to establish its base of operations.\nYellow Stars are combat safe. There is no combat between player forces. Ships lost to combat against Cerberus will safely return to a colonized planet.",
             "color": 16776960,
             "fields": [
                 {
@@ -22,7 +22,7 @@
                 },
                 {
                     "name": "ID:",
-                    "value": "-# $<ID>"
+                    "value": "$<ID>"
                 }
             ],
             "image": {

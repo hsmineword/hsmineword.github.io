@@ -156,56 +156,16 @@ async function fetchGalaxyData() {
   }
 }
 
-// Update visible map objects
-function updateGalaxyObjects(objects) {
-  const nextMap = new Map();
-  const anvils = {};
-  const children = [];
 
-  for (const obj of objects) {
-    if (obj.map_is_anvil) {
-      anvils[obj.map_constellation_id] = obj;
-    } else {
-      children.push(obj);
-    }
-  }
-
-  for (const child of children) {
-    const anvil = anvils[child.map_constellation_id];
-    if (anvil) {
-      const blend = 0.5 + Math.random() * 0.2;
-      child.cords.x = anvil.cords.x + (child.cords.x - anvil.cords.x) * blend;
-      child.cords.y = anvil.cords.y + (child.cords.y - anvil.cords.y) * blend;
-    }
-  }
-
-  const all = [...Object.values(anvils), ...children];
-  all.forEach(obj => {
-    const el = mapObjects.has(obj.id) ? mapObjects.get(obj.id)._el : createMapElement(obj);
-    obj._el = el;
-    obj._pos = { x: obj.cords.x, y: obj.cords.y };
-    nextMap.set(obj.id, obj);
-  });
-
-  // Clean up removed elements
-  for (const [id, entry] of mapObjects) {
-    if (!nextMap.has(id)) {
-      entry._el.remove();
-    }
-  }
-
-  // Replace map
-  mapObjects.clear();
-  for (const [id, entry] of nextMap) {
-    mapObjects.set(id, entry);
-  }
-}
-
+// Galaxy object creation log
 function createMapElement(obj) {
   console.log("[createMapElement] Creating element for:", obj.id, obj.map_name);
 
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
+  wrapper.style.position = 'absolute';
+  wrapper.style.border = '1px solid red';
+  wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
   const img = document.createElement('img');
   img.src = obj.map_icon;
@@ -231,14 +191,118 @@ function createMapElement(obj) {
     }
   });
 
-  // Add style to debug positioning
-  wrapper.style.position = 'absolute';
-  wrapper.style.border = '1px solid red';
-  wrapper.style.zIndex = '100'; // Ensure it's not under canvas
+  // Save element to map for tracking
+  mapObjects.set(obj.id, { _el: wrapper, ...obj });
 
   console.log("[createMapElement] Element created:", wrapper);
+
   return wrapper;
 }
+
+// Track map updates and objects
+function updateGalaxyObjects(objects) {
+  const nextMap = new Map();
+  const anvils = {};
+  const children = [];
+
+  console.log("[updateGalaxyObjects] Processing objects:", objects.length, "objects found");
+
+  for (const obj of objects) {
+    console.log("[updateGalaxyObjects] Processing object:", obj.map_name);
+
+    if (obj.map_is_anvil) {
+      anvils[obj.map_constellation_id] = obj;
+    } else {
+      children.push(obj);
+    }
+  }
+
+  for (const child of children) {
+    const anvil = anvils[child.map_constellation_id];
+    if (anvil) {
+      const blend = 0.5 + Math.random() * 0.2;
+      child.cords.x = anvil.cords.x + (child.cords.x - anvil.cords.x) * blend;
+      child.cords.y = anvil.cords.y + (child.cords.y - anvil.cords.y) * blend;
+    }
+  }
+
+  const all = [...Object.values(anvils), ...children];
+  console.log("[updateGalaxyObjects] Total objects to update:", all.length);
+
+  all.forEach(obj => {
+    const el = mapObjects.has(obj.id) ? mapObjects.get(obj.id)._el : createMapElement(obj);
+    obj._el = el;
+    obj._pos = { x: obj.cords.x, y: obj.cords.y };
+    nextMap.set(obj.id, obj);
+  });
+
+  // Debug: Check mapObjects before cleanup
+  console.log("[updateGalaxyObjects] Map objects before cleanup:", Array.from(mapObjects.keys()));
+
+  // Clean up removed elements
+  for (const [id, entry] of mapObjects) {
+    if (!nextMap.has(id)) {
+      console.log("[updateGalaxyObjects] Removing object from map:", entry._el);
+      entry._el.remove();
+    }
+  }
+
+  // Debug: Check mapObjects after cleanup
+  console.log("[updateGalaxyObjects] Map objects after cleanup:", Array.from(nextMap.keys()));
+
+  // Replace map
+  mapObjects.clear();
+  for (const [id, entry] of nextMap) {
+    mapObjects.set(id, entry);
+  }
+
+  console.log("[updateGalaxyObjects] Final map objects:", Array.from(mapObjects.keys()));
+}
+
+// Track each draw cycle and object placement
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
+  ctx.scale(zoom, zoom);
+
+  const time = Date.now() / 10000;
+  const cos = Math.cos(time);
+  const sin = Math.sin(time);
+
+  // Draw stars
+  for (const star of stars) {
+    const x = star.x * cos - star.y * sin;
+    const y = star.x * sin + star.y * cos;
+    ctx.beginPath();
+    ctx.arc(x, y, star.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  }
+
+  // Draw map objects
+  for (const [id, obj] of mapObjects) {
+    const x = obj._pos.x * cos - obj._pos.y * sin;
+    const y = obj._pos.x * sin + obj._pos.y * cos;
+
+    const screenX = x * zoom + width / 2 + offsetX;
+    const screenY = y * zoom + height / 2 + offsetY;
+
+    console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+
+    const el = obj._el;
+    el.style.left = `${screenX}px`;
+    el.style.top = `${screenY}px`;
+    el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
+  }
+
+  requestAnimationFrame(draw);
+}
+
+draw(); // Start the drawing loop
+
 
 
 

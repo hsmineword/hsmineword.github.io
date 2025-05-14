@@ -239,4 +239,10 @@ wrapper.addEventListener('click', () => {
 });
 
 
+function startGalaxyDataFetch() {
+  fetchGalaxyData();
+  setInterval(fetchGalaxyData, 60000);
+}
 
+// Call startGalaxyDataFetch when you're ready to begin fetching
+startGalaxyDataFetch();

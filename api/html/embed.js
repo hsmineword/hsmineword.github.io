@@ -13,11 +13,18 @@ function parseMarkdown(content) {
   return content;
 }
 
-// Render the embed
+function parseColor(color) {
+  if (!color) return '#5865F2'; // default
+  if (typeof color === 'number') {
+    return `#${color.toString(16).padStart(6, '0')}`;
+  }
+  return color;
+}
+
 function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   console.log("[Embed Renderer] Rendering embed with data:", data);
 
-  // Remove old embeds
+  // Remove previous embeds
   document.querySelectorAll('.discord-embed').forEach(el => el.remove());
 
   const embed = document.createElement('div');
@@ -25,10 +32,10 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   embed.style.position = 'absolute';
   embed.style.left = `${position.x}px`;
   embed.style.top = `${position.y}px`;
-  embed.style.borderLeft = `4px solid ${data.color ? parseColor(data.color) : '#5865F2'}`;
+  embed.style.borderLeft = `4px solid ${parseColor(data.color)}`;
   embed.style.background = '#2f3136';
   embed.style.color = '#fff';
-  embed.style.padding = '10px 10px 15px 10px';
+  embed.style.padding = '10px';
   embed.style.borderRadius = '8px';
   embed.style.width = '320px';
   embed.style.fontFamily = 'sans-serif';
@@ -36,7 +43,7 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   embed.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.4)';
   embed.style.boxSizing = 'border-box';
 
-  // Close button
+  // Close Button
   const closeBtn = document.createElement('div');
   closeBtn.textContent = '×';
   closeBtn.style.position = 'absolute';
@@ -46,91 +53,128 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   closeBtn.style.fontSize = '16px';
   closeBtn.style.color = '#ccc';
   closeBtn.style.userSelect = 'none';
+  closeBtn.title = 'Close';
   closeBtn.addEventListener('click', () => {
-    embed.remove();
-    console.log('[Embed Renderer] Embed closed');
+    console.log('[Embed Renderer] Close button clicked');
+    embed.remove(); // removes the embed from the DOM
   });
   embed.appendChild(closeBtn);
 
-  // Content container
-  let content = '';
+  // Create a wrapper for inner content
+  const content = document.createElement('div');
 
   // Author
   if (data.author) {
-    content += `<div style="display: flex; align-items: center; font-size: 13px; font-weight: bold; margin-bottom: 6px;">`;
+    const authorDiv = document.createElement('div');
+    authorDiv.style.display = 'flex';
+    authorDiv.style.alignItems = 'center';
+    authorDiv.style.fontSize = '13px';
+    authorDiv.style.fontWeight = 'bold';
+    authorDiv.style.marginBottom = '6px';
     if (data.author.icon_url) {
-      content += `<img src="${data.author.icon_url}" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 6px;">`;
+      const icon = document.createElement('img');
+      icon.src = data.author.icon_url;
+      icon.style.width = '20px';
+      icon.style.height = '20px';
+      icon.style.borderRadius = '50%';
+      icon.style.marginRight = '6px';
+      authorDiv.appendChild(icon);
     }
-    const authorText = data.author.url
-      ? `<a href="${data.author.url}" target="_blank" style="color: #00b0f4; text-decoration: none;">${data.author.name || 'Author'}</a>`
-      : `${data.author.name || 'Author'}`;
-    content += `${authorText}</div>`;
+    const authorText = document.createElement('span');
+    authorText.textContent = data.author.name || 'Author';
+    authorDiv.appendChild(authorText);
+    content.appendChild(authorDiv);
   }
 
-  // Title with link
+  // Title (with optional URL)
   if (data.title) {
+    const title = document.createElement('div');
+    title.style.fontSize = '14px';
+    title.style.fontWeight = 'bold';
+    title.style.marginBottom = '4px';
     if (data.url) {
-      content += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;"><a href="${data.url}" target="_blank" style="color: #00b0f4; text-decoration: none;">${data.title}</a></div>`;
+      const link = document.createElement('a');
+      link.href = data.url;
+      link.target = '_blank';
+      link.textContent = data.title;
+      link.style.color = '#00b0f4';
+      link.style.textDecoration = 'none';
+      title.appendChild(link);
     } else {
-      content += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">${data.title}</div>`;
+      title.textContent = data.title;
     }
+    content.appendChild(title);
   }
 
   // Description
   if (data.description) {
-    content += `<div style="font-size: 13px; margin-bottom: 8px;">${parseMarkdown(data.description)}</div>`;
+    const desc = document.createElement('div');
+    desc.style.fontSize = '13px';
+    desc.style.marginBottom = '8px';
+    desc.innerHTML = parseMarkdown(data.description);
+    content.appendChild(desc);
   }
 
   // Fields
   if (data.fields && Array.isArray(data.fields)) {
     data.fields.forEach(field => {
-      content += `<div style="margin-bottom: 5px;"><strong>${field.name}:</strong> ${parseMarkdown(field.value)}</div>`;
+      const fieldDiv = document.createElement('div');
+      fieldDiv.style.marginBottom = '5px';
+      fieldDiv.innerHTML = `<strong>${field.name}</strong>: ${parseMarkdown(field.value)}`;
+      content.appendChild(fieldDiv);
     });
   }
 
-  // Image (full-width)
+  // Image
   if (data.image?.url) {
-    content += `<div style="margin-top: 10px;"><img src="${data.image.url}" style="width: 100%; border-radius: 4px;"></div>`;
+    const img = document.createElement('img');
+    img.src = data.image.url;
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '6px';
+    img.style.marginTop = '10px';
+    content.appendChild(img);
   }
 
-  // Thumbnail (floated to right)
+  // Thumbnail (optional small image on top right)
   if (data.thumbnail?.url) {
-    content += `<div style="position: absolute; top: 10px; right: 10px;">
-      <img src="${data.thumbnail.url}" style="width: 40px; height: 40px; border-radius: 6px;">
-    </div>`;
+    const thumb = document.createElement('img');
+    thumb.src = data.thumbnail.url;
+    thumb.style.position = 'absolute';
+    thumb.style.top = '10px';
+    thumb.style.right = '10px';
+    thumb.style.width = '40px';
+    thumb.style.height = '40px';
+    thumb.style.borderRadius = '4px';
+    embed.appendChild(thumb);
   }
 
   // Footer
   if (data.footer) {
-    content += `<div style="font-size: 12px; margin-top: 12px; color: #aaa;">`;
-    if (data.footer.text) {
-      content += `<div>${data.footer.text}</div>`;
-    }
+    const footer = document.createElement('div');
+    footer.style.fontSize = '12px';
+    footer.style.marginTop = '10px';
+    footer.style.color = '#aaa';
+    footer.innerHTML = `<div><strong>${data.footer.text}</strong></div>`;
     if (data.timestamp) {
-      content += `<div>${new Date(data.timestamp).toLocaleString()}</div>`;
+      const ts = new Date(data.timestamp).toLocaleString();
+      footer.innerHTML += `<div>${ts}</div>`;
     }
     if (data.footer.icon_url) {
-      content += `<img src="${data.footer.icon_url}" style="width: 16px; height: 16px; border-radius: 50%; margin-top: 5px;">`;
+      const footerIcon = document.createElement('img');
+      footerIcon.src = data.footer.icon_url;
+      footerIcon.style.width = '16px';
+      footerIcon.style.height = '16px';
+      footerIcon.style.borderRadius = '50%';
+      footerIcon.style.marginTop = '5px';
+      footer.appendChild(footerIcon);
     }
-    content += `</div>`;
+    content.appendChild(footer);
   }
 
-  embed.innerHTML += content;
+  embed.appendChild(content);
   document.body.appendChild(embed);
-
-  console.log('[Embed Renderer] Embed added to page');
 }
 
-// Helper: convert Discord integer color or pass-through hex
-function parseColor(color) {
-  if (typeof color === 'number') {
-    return '#' + color.toString(16).padStart(6, '0');
-  }
-  if (typeof color === 'string' && color.startsWith('#')) {
-    return color;
-  }
-  return '#5865F2'; // default
-}
 
 // Expose global function for integration
 window.createDiscordEmbed = function (data, position) {

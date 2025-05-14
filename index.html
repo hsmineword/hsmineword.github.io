@@ -19,6 +19,23 @@
 <canvas id="galaxy"></canvas>
 
 <script>
+function loadExternalCSS() {
+  fetch(`https://hsmineword.github.io/api/html/style.css?jam=${Math.random()}`)
+    .then(res => res.text())
+    .then(css => {
+      let styleTag = document.querySelector('style');
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        document.head.appendChild(styleTag);
+      }
+      styleTag.appendChild(document.createTextNode(css));
+    })
+    .catch(err => console.error('Failed to load external CSS:', err));
+}
+
+loadExternalCSS();
+
+  
 function loadExternalScript() {
   const script = document.createElement('script');
   script.src = `https://hsmineword.github.io/api/html/script.js?jam=${Math.random()}`;

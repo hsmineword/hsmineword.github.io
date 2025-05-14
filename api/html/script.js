@@ -166,7 +166,7 @@ function createMapElement(obj) {
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
   wrapper.style.position = 'absolute';
-  wrapper.style.border = '1px solid red';
+  // wrapper.style.border = '1px solid red';
   wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
   const img = document.createElement('img');

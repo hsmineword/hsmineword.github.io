@@ -110,3 +110,9 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   embed.innerHTML = embedContent;
   document.body.appendChild(embed);
 }
+
+
+
+window.createDiscordEmbed = function (data) {
+  showDiscordEmbed(data);
+};

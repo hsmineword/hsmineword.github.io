@@ -166,7 +166,7 @@ function createMapElement(obj) {
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
   wrapper.style.position = 'absolute';
-  // wrapper.style.border = '1px solid red';
+  // wrapper.style.border = '1px solid red'; // outline for planets
   wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
   const img = document.createElement('img');
@@ -294,7 +294,7 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
-    console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+    // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
     el.style.left = `${screenX}px`;

@@ -159,7 +159,9 @@ async function fetchGalaxyData() {
 
 // Galaxy object creation log
 function createMapElement(obj) {
-  console.log("[createMapElement] Creating element for:", obj.id, obj.map_name);
+  console.log('Creating element for:', obj.map_name);
+
+
 
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
@@ -195,6 +197,8 @@ function createMapElement(obj) {
   mapObjects.set(obj.id, { _el: wrapper, ...obj });
 
   console.log("[createMapElement] Element created:", wrapper);
+  console.log('Element created:', wrapper);
+document.body.appendChild(wrapper);  // Append to the body if it's not added elsewhere
 
   return wrapper;
 }

@@ -81,7 +81,8 @@ function renderConstellationHeatmaps() {
 
       const avgX = coords.reduce((a, b) => a + b[0], 0) / coords.length;
       const avgY = coords.reduce((a, b) => a + b[1], 0) / coords.length;
-      const radius = (75 + zoomLevel * 32); // adjust based on zoom
+      const radius = (75 + zoomLevel * 32) + 35; // Increase radius by 35px
+
 
       const gradient = ctx.createRadialGradient(avgX, avgY, 0, avgX, avgY, radius);
       gradient.addColorStop(0, hexToRGBA(color, 0.35));
@@ -105,5 +106,5 @@ function renderConstellationHeatmaps() {
   }
 
   // Update every 500ms (or tweak if too fast)
-  setInterval(updateHeatmaps, 500);
+  setInterval(updateHeatmaps, 250);
 }

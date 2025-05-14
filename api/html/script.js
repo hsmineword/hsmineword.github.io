@@ -76,7 +76,7 @@ function draw() {
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
-  requestAnimationFrame();
+  requestAnimationFrame(draw);
 }
 draw();
 

@@ -11,6 +11,14 @@ let startX, startY;
 const stars = [];
 const numStars = 500;
 const seed = Math.floor(Date.now() / 1000);
+const starContainer = document.createElement('div');
+starContainer.style.position = 'absolute';
+starContainer.style.top = 0;
+starContainer.style.left = 0;
+starContainer.style.width = '100%';
+starContainer.style.height = '100%';
+starContainer.style.pointerEvents = 'none';
+document.body.appendChild(starContainer);
 
 function seededRandom(seed) {
   return function () {
@@ -20,7 +28,6 @@ function seededRandom(seed) {
     return ((seed < 0 ? ~seed + 1 : seed) % 1000) / 1000;
   };
 }
-
 const rand = seededRandom(seed);
 
 for (let i = 0; i < numStars; i++) {
@@ -31,14 +38,12 @@ for (let i = 0; i < numStars; i++) {
   });
 }
 
-// Data structures for map objects
-const mapObjects = [];
-const objectIcons = new Map();
+const mapObjects = new Map();
 
 function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, width, height); // Fill canvas with black
+  ctx.fillRect(0, 0, width, height);
 
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
@@ -47,7 +52,6 @@ function draw() {
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
-  // Draw stars
   for (const star of stars) {
     const x = star.x * cos - star.y * sin;
     const y = star.x * sin + star.y * cos;
@@ -57,41 +61,34 @@ function draw() {
     ctx.fill();
   }
 
-  // Draw map objects
-  for (const obj of mapObjects) {
-    const icon = objectIcons.get(obj.id);
-    if (!icon || !icon.complete) continue;
+  for (const [id, obj] of mapObjects) {
+    const x = obj._pos.x * cos - obj._pos.y * sin;
+    const y = obj._pos.x * sin + obj._pos.y * cos;
 
-    const x = obj.cords.x * cos - obj.cords.y * sin;
-    const y = obj.cords.x * sin + obj.cords.y * cos;
-    const size = Math.max(16, Math.min(64, 32 * zoom));
+    const screenX = x * zoom + width / 2 + offsetX;
+    const screenY = y * zoom + height / 2 + offsetY;
 
-    ctx.drawImage(icon, x - size / 2, y - size / 2, size, size);
-    ctx.fillStyle = "#fff";
-    ctx.font = `${Math.floor(12 * zoom)}px sans-serif`;
-    ctx.textAlign = "center";
-    ctx.fillText(obj.map_name, x, y + size / 2 + 12);
+    const el = obj._el;
+    el.style.left = `${screenX}px`;
+    el.style.top = `${screenY}px`;
+    el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
   requestAnimationFrame(draw);
 }
-
 draw();
 
-// Zoom handling
+// Zoom and pan
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
   zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
 });
-
-// Drag handling
 canvas.addEventListener('mousedown', e => {
   drag = true;
   startX = e.clientX;
   startY = e.clientY;
 });
-
 canvas.addEventListener('mousemove', e => {
   if (!drag) return;
   offsetX += (e.clientX - startX);
@@ -99,17 +96,14 @@ canvas.addEventListener('mousemove', e => {
   startX = e.clientX;
   startY = e.clientY;
 });
-
 canvas.addEventListener('mouseup', () => drag = false);
 canvas.addEventListener('mouseleave', () => drag = false);
-
-// Resize
 window.addEventListener('resize', () => {
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
 });
 
-// Loading overlay
+// Galaxy loader
 function showLoading(state) {
   let el = document.getElementById('galaxy-loading');
   if (!el && state) {
@@ -136,28 +130,33 @@ function showLoading(state) {
   }
 }
 
-// Fetching and processing map data
+// Load embed renderer
+function loadEmbedRenderer() {
+  const s = document.createElement('script');
+  s.src = `https://hsmineword.github.io/api/html/embed.js?jam=${Math.random()}`;
+  s.async = true;
+  document.head.appendChild(s);
+}
+loadEmbedRenderer();
+
+// Load galaxy data
 async function fetchGalaxyData() {
   showLoading(true);
   try {
-    const response = await fetch(`https://hsmineword.github.io/elements.json?jam=${Math.random()}`, {
-      cache: 'no-store'
-    });
-    const urls = await response.json();
-
-    const objects = await Promise.all(urls.map(url => fetch(url).then(r => r.json())));
-    processGalaxyObjects(objects);
+    const res = await fetch(`https://hsmineword.github.io/elements.json?jam=${Math.random()}`, { cache: 'no-store' });
+    const urls = await res.json();
+    const jsonObjs = await Promise.all(urls.map(url => fetch(url).then(r => r.json())));
+    updateGalaxyObjects(jsonObjs);
   } catch (e) {
-    console.error("Error loading galaxy data:", e);
+    console.error("Galaxy data error:", e);
   } finally {
     showLoading(false);
   }
 }
 
-function processGalaxyObjects(objects) {
-  mapObjects.length = 0;
-  objectIcons.clear();
-
+// Update visible map objects
+function updateGalaxyObjects(objects) {
+  const nextMap = new Map();
   const anvils = {};
   const children = [];
 
@@ -170,24 +169,61 @@ function processGalaxyObjects(objects) {
   }
 
   for (const child of children) {
-    const aid = child.map_constellation_id;
-    const anvil = anvils[aid];
+    const anvil = anvils[child.map_constellation_id];
     if (anvil) {
-      const blendFactor = 0.5 + Math.random() * 0.2;
-      child.cords.x = anvil.cords.x + (child.cords.x - anvil.cords.x) * blendFactor;
-      child.cords.y = anvil.cords.y + (child.cords.y - anvil.cords.y) * blendFactor;
+      const blend = 0.5 + Math.random() * 0.2;
+      child.cords.x = anvil.cords.x + (child.cords.x - anvil.cords.x) * blend;
+      child.cords.y = anvil.cords.y + (child.cords.y - anvil.cords.y) * blend;
     }
   }
 
-  const allObjects = Object.values(anvils).concat(children);
-  for (const obj of allObjects) {
-    const icon = new Image();
-    icon.src = obj.map_icon;
-    objectIcons.set(obj.id, icon);
-    mapObjects.push(obj);
+  const all = [...Object.values(anvils), ...children];
+  all.forEach(obj => {
+    const el = mapObjects.has(obj.id) ? mapObjects.get(obj.id)._el : createMapElement(obj);
+    obj._el = el;
+    obj._pos = { x: obj.cords.x, y: obj.cords.y };
+    nextMap.set(obj.id, obj);
+  });
+
+  // Clean up removed elements
+  for (const [id, entry] of mapObjects) {
+    if (!nextMap.has(id)) {
+      entry._el.remove();
+    }
+  }
+
+  // Replace map
+  mapObjects.clear();
+  for (const [id, entry] of nextMap) {
+    mapObjects.set(id, entry);
   }
 }
 
-// Initial and periodic fetch
+function createMapElement(obj) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'map-object';
+
+  const img = document.createElement('img');
+  img.src = obj.map_icon;
+  img.width = 32;
+  img.height = 32;
+  wrapper.appendChild(img);
+
+  const label = document.createElement('span');
+  label.textContent = obj.map_name;
+  wrapper.appendChild(label);
+
+  wrapper.addEventListener('click', () => {
+    if (window.createDiscordEmbed) {
+      window.createDiscordEmbed(obj.interaction_on_click?.data || {});
+    } else {
+      console.log('No embed renderer loaded yet.');
+    }
+  });
+
+  starContainer.appendChild(wrapper);
+  return wrapper;
+}
+
 fetchGalaxyData();
 setInterval(fetchGalaxyData, 60000);

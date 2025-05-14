@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Galactic Map Vortex</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<canvas id="map"></canvas>
+
+<script>
+  const canvas = document.getElementById('map');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  const TWO_PI = Math.PI * 2;
+
+  // Sample data
+  const groups = [
+    {
+      type: "home",
+      color: "#ffffff",
+      radius: 0, // core
+      children: [
+        {
+          id: "alpha-1",
+          distance: 100,
+          discoveredAt: Date.now() - 100000000,
+        },
+        {
+          id: "alpha-2",
+          distance: 150,
+          discoveredAt: Date.now() - 50000000,
+        }
+      ]
+    },
+    {
+      type: "other",
+      color: "#00ffcc",
+      radius: 300,
+      children: [
+        {
+          id: "beta-1",
+          distance: 100,
+          discoveredAt: Date.now() - 200000000,
+        },
+        {
+          id: "beta-2",
+          distance: 180,
+          discoveredAt: Date.now() - 80000000,
+        }
+      ]
+    }
+  ];
+
+  function drawStar(x, y, color, size = 3) {
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.arc(x, y, size, 0, TWO_PI);
+    ctx.fill();
+  }
+
+  function drawFog(centerX, centerY, radius, color) {
+    const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.5, centerX, centerY, radius);
+    gradient.addColorStop(0, color + "33"); // semi-transparent center
+    gradient.addColorStop(1, color + "00"); // fade out
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, TWO_PI);
+    ctx.fill();
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const now = Date.now();
+
+    for (const group of groups) {
+      const groupCenterX = centerX + Math.cos(0) * group.radius;
+      const groupCenterY = centerY + Math.sin(0) * group.radius;
+
+      // Draw vortex/fog
+      drawFog(groupCenterX, groupCenterY, 200, group.color);
+
+      // Draw central star
+      drawStar(groupCenterX, groupCenterY, group.color, 5);
+
+      // Orbiting stars
+      for (const child of group.children) {
+        const age = now - child.discoveredAt;
+        const speed = 0.00000002; // adjust for slower orbit
+        const angle = (age * speed) % TWO_PI;
+        const orbitRadius = child.distance;
+
+        const x = groupCenterX + Math.cos(angle) * orbitRadius;
+        const y = groupCenterY + Math.sin(angle) * orbitRadius;
+
+        drawStar(x, y, group.color);
+      }
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  render();
+</script>
+</body>
+</html>

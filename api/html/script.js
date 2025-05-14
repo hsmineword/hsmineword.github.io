@@ -257,3 +257,4 @@ function startGalaxyDataFetch() {
 }
 
 startGalaxyDataFetch(); // Call once at start, end
+});

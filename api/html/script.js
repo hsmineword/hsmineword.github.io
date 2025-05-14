@@ -213,17 +213,31 @@ function createMapElement(obj) {
   label.textContent = obj.map_name;
   wrapper.appendChild(label);
 
-  wrapper.addEventListener('click', () => {
-    if (window.createDiscordEmbed) {
-      window.createDiscordEmbed(obj.interaction_on_click?.data || {});
-    } else {
-      console.log('No embed renderer loaded yet.');
-    }
-  });
-
-  starContainer.appendChild(wrapper);
-  return wrapper;
+  // Make sure this function is loaded globally
+function createDiscordEmbed(embedData) {
+  // Check if the embed data exists and has the required structure
+  if (embedData) {
+    // Show the embed using the data provided
+    showDiscordEmbed(embedData);
+  } else {
+    console.log("No embed data provided!");
+  }
 }
+
+// Event listener for the wrapper element
+wrapper.addEventListener('click', () => {
+  // Check if the interaction_on_click data exists and is valid
+  const interactionData = obj.interaction_on_click?.data;
+
+  // If the embed renderer is loaded, create and display the embed
+  if (window.createDiscordEmbed) {
+    // If there's interaction data, pass it to createDiscordEmbed
+    window.createDiscordEmbed(interactionData || {});
+  } else {
+    console.log('No embed renderer loaded yet.');
+  }
+});
+
 
 fetchGalaxyData();
 setInterval(fetchGalaxyData, 60000);

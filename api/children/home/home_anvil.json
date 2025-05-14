@@ -1,0 +1,25 @@
+{
+  "id": "elysium",
+  "heatmaphex": "#ff6600",
+  "cords": {
+    "x": 100,
+    "y": -200
+  },
+  "map_icon": "https://userxinos.github.io/HadesSpace/assets/planets-calc-lJcyVupo.png",
+  "map_name": "Elysium",
+  "map_constellation_id": "alpha-03",
+  "map_is_anvil": true,
+  "interaction_on_click": {
+    "type": "discord_embed",
+    "data": {
+      "color": "#0088ff",
+      "title": "Elysium Star System",
+      "description": "Federation stronghold. Stable region with growing influence.",
+      "fields": [
+        { "name": "Status", "value": "Secure", "inline": true },
+        { "name": "Population", "value": "1,300", "inline": true },
+        { "name": "Owner", "value": "NovaCore" }
+      ]
+    }
+  }
+}

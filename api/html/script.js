@@ -209,46 +209,29 @@ function updateGalaxyObjects(objects) {
   const anvils = {};
   const children = [];
 
-  // Group objects by map_constellation_id
-  const constellations = {};
-
   console.log("[updateGalaxyObjects] Processing objects:", objects.length, "objects found");
 
   for (const obj of objects) {
+    console.log("[updateGalaxyObjects] Processing object:", obj.map_name);
+
     if (obj.map_is_anvil) {
       anvils[obj.map_constellation_id] = obj;
     } else {
       children.push(obj);
-
-      // Group by constellation
-      if (!constellations[obj.map_constellation_id]) {
-        constellations[obj.map_constellation_id] = [];
-      }
-      constellations[obj.map_constellation_id].push(obj);
     }
   }
 
-  // Process constellation objects and their heatmaps
-  Object.keys(constellations).forEach(constellationId => {
-    const objectsInConstellation = constellations[constellationId];
-
-    if (0 > 1) {
-      // Create the heatmap background for this constellation
-      createHeatmapBackground(constellationId, objectsInConstellation);
-    }
-  });
-
-  // Continue processing the child objects
-  children.forEach(obj => {
-    const anvil = anvils[obj.map_constellation_id];
+  for (const child of children) {
+    const anvil = anvils[child.map_constellation_id];
     if (anvil) {
       const blend = 0.5 + Math.random() * 0.2;
-      obj.cords.x = anvil.cords.x + (obj.cords.x - anvil.cords.x) * blend;
-      obj.cords.y = anvil.cords.y + (obj.cords.y - anvil.cords.y) * blend;
+      child.cords.x = anvil.cords.x + (child.cords.x - anvil.cords.x) * blend;
+      child.cords.y = anvil.cords.y + (child.cords.y - anvil.cords.y) * blend;
     }
-  });
+  }
 
   const all = [...Object.values(anvils), ...children];
+  console.log("[updateGalaxyObjects] Total objects to update:", all.length);
 
   all.forEach(obj => {
     const el = mapObjects.has(obj.id) ? mapObjects.get(obj.id)._el : createMapElement(obj);
@@ -256,6 +239,9 @@ function updateGalaxyObjects(objects) {
     obj._pos = { x: obj.cords.x, y: obj.cords.y };
     nextMap.set(obj.id, obj);
   });
+
+  // Debug: Check mapObjects before cleanup
+  console.log("[updateGalaxyObjects] Map objects before cleanup:", Array.from(mapObjects.keys()));
 
   // Clean up removed elements
   for (const [id, entry] of mapObjects) {
@@ -265,6 +251,9 @@ function updateGalaxyObjects(objects) {
     }
   }
 
+  // Debug: Check mapObjects after cleanup
+  console.log("[updateGalaxyObjects] Map objects after cleanup:", Array.from(nextMap.keys()));
+
   // Replace map
   mapObjects.clear();
   for (const [id, entry] of nextMap) {
@@ -273,34 +262,6 @@ function updateGalaxyObjects(objects) {
 
   console.log("[updateGalaxyObjects] Final map objects:", Array.from(mapObjects.keys()));
 }
-function createHeatmapBackground(constellationId, objectsInConstellation) {
-  // Create the background heatmap div
-  const heatmapDiv = document.createElement('div');
-  heatmapDiv.className = `heatmap-${constellationId}`;
-  heatmapDiv.style.position = 'absolute';
-  heatmapDiv.style.top = 0;
-  heatmapDiv.style.left = 0;
-  heatmapDiv.style.width = '100%';
-  heatmapDiv.style.height = '100%';
-  heatmapDiv.style.pointerEvents = 'none'; // Don't interfere with click events
-
-  // Calculate the gradient based on the heatmap hex colors of the planets
-  const gradient = generateGradientForConstellation(objectsInConstellation);
-
-  heatmapDiv.style.background = gradient;
-  document.body.appendChild(heatmapDiv);  // Add the heatmap div to the body
-
-  console.log(`[Heatmap] Created for constellation ${constellationId}`);
-}
-
-function generateGradientForConstellation(objectsInConstellation) {
-  // Collect all the heatmaphex colors
-  const colors = objectsInConstellation.map(obj => obj.heatmaphex);
-
-  // Use a linear gradient between the colors (or a weighted one if you prefer)
-  return `linear-gradient(to right, ${colors.join(', ')})`;
-}
-
 
 // Track each draw cycle and object placement
 function draw() {

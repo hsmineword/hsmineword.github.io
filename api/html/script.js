@@ -132,14 +132,6 @@ function showLoading(state) {
   }
 }
 
-function createHeatmap(star, distanceFactor) {
-  // You can adjust the color depending on the distance or any other factor
-  const intensity = Math.max(0, 1 - distanceFactor); // Example: closer objects have higher intensity
-  const color = `rgb(${intensity * 255}, 0, ${(1 - intensity) * 255})`; // Heatmap color from red to blue
-  return color;
-}
-
-
 // Load embed renderer
 function loadEmbedRenderer() {
   const s = document.createElement('script');
@@ -284,29 +276,25 @@ function draw() {
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
-  // Draw stars with heatmap always on
+  // Draw stars
   for (const star of stars) {
     const x = star.x * cos - star.y * sin;
     const y = star.x * sin + star.y * cos;
-
-    const distanceFactor = Math.sqrt(x * x + y * y) / 4000; // Example: distance from center
-
-    // Apply heatmap color based on distance factor
-    const color = createHeatmap(star, distanceFactor);
-
     ctx.beginPath();
     ctx.arc(x, y, star.r, 0, Math.PI * 2);
-    ctx.fillStyle = color;
+    ctx.fillStyle = '#fff';
     ctx.fill();
   }
 
-  // Draw map objects (heatmap always applied here too if needed)
+  // Draw map objects
   for (const [id, obj] of mapObjects) {
     const x = obj._pos.x * cos - obj._pos.y * sin;
     const y = obj._pos.x * sin + obj._pos.y * cos;
 
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
+
+    // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
     el.style.left = `${screenX}px`;
@@ -316,7 +304,6 @@ function draw() {
 
   requestAnimationFrame(draw);
 }
-
 
 draw(); // Start the drawing loop
 

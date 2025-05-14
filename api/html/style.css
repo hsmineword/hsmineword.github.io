@@ -1,12 +1,13 @@
 .map-object {
-    position: absolute;
-    pointer-events: auto;
-    text-align: center;
-    font-family: sans-serif;
-    color: white;
-    z-index: 10;
-    transform: translate(-50%, -50%);
-  }
+  position: absolute;
+  pointer-events: auto;
+  text-align: center;
+  font-family: sans-serif;
+  color: white;
+  z-index: 100; /* Increased z-index */
+  transform: translate(-50%, -50%);
+}
+
   .map-object img {
     display: block;
     margin: 0 auto;
@@ -16,3 +17,9 @@
     font-size: 12px;
     white-space: nowrap;
   }
+
+
+canvas {
+  display: block;
+  z-index: 0; /* Ensure it's at the bottom layer */
+}

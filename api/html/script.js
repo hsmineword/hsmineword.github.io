@@ -68,6 +68,8 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
+      // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+
     const el = obj._el;
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
@@ -143,7 +145,7 @@ loadEmbedRenderer();
 async function fetchGalaxyData() {
   showLoading(true);
   try {
-    const res = await fetch(`https://hsmineword.github.io/elements.json?jam=${Math.random()}`, { cache: 'no-store' });
+    const res = await fetch(`https://hsmineword.github.io/api/elements.json?jam=${Math.random()}`, { cache: 'no-store' });
     const urls = await res.json();
     const jsonObjs = await Promise.all(urls.map(url => fetch(url).then(r => r.json())));
     updateGalaxyObjects(jsonObjs);
@@ -154,13 +156,17 @@ async function fetchGalaxyData() {
   }
 }
 
+
 // Galaxy object creation log
 function createMapElement(obj) {
   console.log('Creating element for:', obj.map_name);
 
+
+
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
   wrapper.style.position = 'absolute';
+  // wrapper.style.border = '1px solid red'; // outline for planets
   wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
   const img = document.createElement('img');
@@ -191,7 +197,8 @@ function createMapElement(obj) {
   mapObjects.set(obj.id, { _el: wrapper, ...obj });
 
   console.log("[createMapElement] Element created:", wrapper);
-  document.body.appendChild(wrapper);
+  console.log('Element created:', wrapper);
+document.body.appendChild(wrapper);  // Append to the body if it's not added elsewhere
 
   return wrapper;
 }
@@ -233,6 +240,9 @@ function updateGalaxyObjects(objects) {
     nextMap.set(obj.id, obj);
   });
 
+  // Debug: Check mapObjects before cleanup
+  console.log("[updateGalaxyObjects] Map objects before cleanup:", Array.from(mapObjects.keys()));
+
   // Clean up removed elements
   for (const [id, entry] of mapObjects) {
     if (!nextMap.has(id)) {
@@ -240,6 +250,9 @@ function updateGalaxyObjects(objects) {
       entry._el.remove();
     }
   }
+
+  // Debug: Check mapObjects after cleanup
+  console.log("[updateGalaxyObjects] Map objects after cleanup:", Array.from(nextMap.keys()));
 
   // Replace map
   mapObjects.clear();
@@ -281,6 +294,8 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
+    // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
+
     const el = obj._el;
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
@@ -292,11 +307,15 @@ function draw() {
 
 draw(); // Start the drawing loop
 
+
+
+
+  
 // Galaxy data fetching logic
 function fetchGalaxyDataWrapper() {
   showLoading(true);
 
-  fetch('https://hsmineword.github.io/elements.json?jam=' + Math.random(), { cache: 'no-store' })
+  fetch('https://hsmineword.github.io/api/elements.json?jam=' + Math.random(), { cache: 'no-store' })
     .then(res => res.json())
     .then(urls => Promise.all(urls.map(url => fetch(url).then(r => r.json()))))
     .then(jsonObjs => updateGalaxyObjects(jsonObjs))
@@ -310,4 +329,4 @@ function startGalaxyDataFetch() {
   setInterval(fetchGalaxyDataWrapper, 60000); // every minute
 }
 
-startGalaxyDataFetch(); // Call once at start
+startGalaxyDataFetch(); // Call once at start, end

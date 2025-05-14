@@ -68,8 +68,6 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
-      // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
-
     const el = obj._el;
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
@@ -156,17 +154,13 @@ async function fetchGalaxyData() {
   }
 }
 
-
 // Galaxy object creation log
 function createMapElement(obj) {
   console.log('Creating element for:', obj.map_name);
 
-
-
   const wrapper = document.createElement('div');
   wrapper.className = 'map-object';
   wrapper.style.position = 'absolute';
-  // wrapper.style.border = '1px solid red'; // outline for planets
   wrapper.style.zIndex = '100'; // Ensure it's not under canvas
 
   const img = document.createElement('img');
@@ -197,8 +191,7 @@ function createMapElement(obj) {
   mapObjects.set(obj.id, { _el: wrapper, ...obj });
 
   console.log("[createMapElement] Element created:", wrapper);
-  console.log('Element created:', wrapper);
-document.body.appendChild(wrapper);  // Append to the body if it's not added elsewhere
+  document.body.appendChild(wrapper);
 
   return wrapper;
 }
@@ -240,9 +233,6 @@ function updateGalaxyObjects(objects) {
     nextMap.set(obj.id, obj);
   });
 
-  // Debug: Check mapObjects before cleanup
-  console.log("[updateGalaxyObjects] Map objects before cleanup:", Array.from(mapObjects.keys()));
-
   // Clean up removed elements
   for (const [id, entry] of mapObjects) {
     if (!nextMap.has(id)) {
@@ -250,9 +240,6 @@ function updateGalaxyObjects(objects) {
       entry._el.remove();
     }
   }
-
-  // Debug: Check mapObjects after cleanup
-  console.log("[updateGalaxyObjects] Map objects after cleanup:", Array.from(nextMap.keys()));
 
   // Replace map
   mapObjects.clear();
@@ -294,8 +281,6 @@ function draw() {
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
 
-    // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
-
     const el = obj._el;
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
@@ -307,10 +292,6 @@ function draw() {
 
 draw(); // Start the drawing loop
 
-
-
-
-  
 // Galaxy data fetching logic
 function fetchGalaxyDataWrapper() {
   showLoading(true);
@@ -329,4 +310,4 @@ function startGalaxyDataFetch() {
   setInterval(fetchGalaxyDataWrapper, 60000); // every minute
 }
 
-startGalaxyDataFetch(); // Call once at start, end
+startGalaxyDataFetch(); // Call once at start

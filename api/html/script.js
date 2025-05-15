@@ -9,8 +9,8 @@ let drag = false;
 let startX, startY;
 
 const stars = [];
-const numStars = 125000;
-const seed = Math.floor(Date.now() / 1000);
+const numStars = 225000;
+const seed = Math.floor((Date.now() / 1000) / 100);
 const starContainer = document.createElement('div');
 starContainer.style.position = 'absolute';
 starContainer.style.top = 0;
@@ -382,3 +382,21 @@ function loadTooCloseScript() {
 }
 
 loadTooCloseScript();
+
+function loadGalaxySearchBar() {
+  const jam = Math.random().toString(36).substring(2, 10); // random string
+  const script = document.createElement('script');
+  script.src = `https://hsmineword.github.io/api/html/search.js?jam=${jam}`;
+  script.async = true;
+
+  script.onload = () => {
+    console.log(`[GalaxySearchLoader] search.js loaded successfully.`);
+  };
+
+  script.onerror = () => {
+    console.error(`[GalaxySearchLoader] Failed to load search.js`);
+  };
+
+  document.head.appendChild(script);
+}
+loadGalaxySearchBar();

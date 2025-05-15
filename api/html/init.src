@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    h1 {
+      color: yellow;
+      font-size: 3em;
+      margin-bottom: 0.2em;
+    }
+    .version {
+      color: white;
+      font-size: 1.2em;
+      margin-bottom: 1em;
+    }
+    .button {
+      padding: 1em 2em;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 6px;
+      margin: 1em;
+      cursor: not-allowed;
+      background-color: grey;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    .button.active {
+      background-color: cyan;
+      cursor: pointer;
+    }
+    .button.mobile-blocked {
+      background-color: red;
+    }
+    .mobile-warning {
+      color: red;
+      font-weight: bold;
+      margin-top: 0.5em;
+    }
+    .changelog {
+      border: 1px solid white;
+      padding: 1em;
+      margin-top: 2em;
+      max-width: 500px;
+    }
+    .checkbox-area {
+      margin-top: 2em;
+      color: white;
+    }
+    .skip-notice {
+      position: absolute;
+      top: 1em;
+      left: 1em;
+      color: yellow;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="skipNotice" class="skip-notice" style="display: none;">
+  Download essential files and load source new html
+</div>
+
+<div id="greeting">
+  <h1>Welcome User!!</h1>
+  <div class="version" id="versionText">Loading version...</div>
+  <button id="startButton" class="button">Loading...</button>
+  <div id="mobileWarning" class="mobile-warning" style="display: none;">
+    /!\ Mobile devices are not supported, we are not responsible for any errors /!\
+  </div>
+  <div class="changelog" id="changelogBox">
+    Loading changelog...
+  </div>
+  <div class="checkbox-area">
+    <label>
+      <input type="checkbox" id="dontShow"> Don't show this page again
+    </label>
+  </div>
+</div>
+
+<script>
+  const VERSION_URL = 'https://hsmineword.github.io/api/html/greetings.json?jam=' + Math.random();
+  const skipNotice = document.getElementById('skipNotice');
+  const greeting = document.getElementById('greeting');
+
+  const storedSkip = localStorage.getItem('skipUntil');
+  if (storedSkip && parseInt(storedSkip) > Date.now()) {
+    greeting.style.display = 'none';
+    skipNotice.style.display = 'block';
+
+    // Optionally fetch and load source automatically here
+    fetchSourceAndReplace();
+  } else {
+    fetchGreetingData();
+  }
+
+  function fetchGreetingData() {
+    fetch(VERSION_URL)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('versionText').textContent = 'Current version of map ' + data.version;
+        document.getElementById('changelogBox').textContent = data.changelog;
+
+        const btn = document.getElementById('startButton');
+        let mobile = /Mobi|Android/i.test(navigator.userAgent);
+        let blocked = mobile && !data.mobile_support;
+
+        if (blocked) {
+          btn.classList.add('mobile-blocked');
+          document.getElementById('mobileWarning').style.display = 'block';
+        } else {
+          btn.classList.add('active');
+          btn.textContent = 'View Map';
+          btn.disabled = false;
+          btn.style.cursor = 'pointer';
+          btn.addEventListener('click', () => {
+            fetchSourceAndReplace(data.source, data.version);
+          });
+        }
+
+        // Set skip flag if user chooses
+        document.getElementById('dontShow').addEventListener('change', e => {
+          if (e.target.checked) {
+            const twoWeeks = Date.now() + 14 * 24 * 60 * 60 * 1000;
+            localStorage.setItem('skipUntil', twoWeeks.toString());
+          } else {
+            localStorage.removeItem('skipUntil');
+          }
+        });
+      });
+  }
+
+  function fetchSourceAndReplace(srcURL = '', version = '') {
+    const fullURL = srcURL + '?version=' + encodeURIComponent(version) + '&jam=' + Math.random();
+    fetch(fullURL)
+      .then(res => res.text())
+      .then(html => {
+        document.open();
+        document.write(html);
+        document.close();
+      })
+      .catch(err => {
+        alert('Failed to load map source: ' + err);
+      });
+  }
+</script>
+
+</body>
+</html>

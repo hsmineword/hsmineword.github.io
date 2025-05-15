@@ -68,7 +68,7 @@
   </style>
 </head>
 <body>
-
+<center>
 <div id="skipNotice" class="skip-notice" style="display: none;">
   Download essential files and load source new html
 </div>
@@ -89,7 +89,7 @@
     </label>
   </div>
 </div>
-
+</center>
 <script>
   const VERSION_URL = 'https://hsmineword.github.io/api/html/greetings.json?jam=' + Math.random();
   const skipNotice = document.getElementById('skipNotice');

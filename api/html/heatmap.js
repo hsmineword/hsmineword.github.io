@@ -81,9 +81,23 @@ function renderConstellationHeatmaps() {
 
       const avgX = coords.reduce((a, b) => a + b[0], 0) / coords.length;
       const avgY = coords.reduce((a, b) => a + b[1], 0) / coords.length;
-      const radius = (75 + zoomLevel * 32) + 75; // Increase radius by 35px
 
 
+      // Compute average distance from center to define spread
+let maxDistance = 0;
+coords.forEach(([x, y]) => {
+  const dx = x - avgX;
+  const dy = y - avgY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist > maxDistance) maxDistance = dist;
+});
+
+// Final radius includes zoom influence + padding
+const baseRadius = maxDistance + (zoomLevel * 20) + 30; // tweak multipliers and padding as needed
+
+      
+
+      const radius = baseRadius;
       const gradient = ctx.createRadialGradient(avgX, avgY, 0, avgX, avgY, radius);
       gradient.addColorStop(0, hexToRGBA(color, 0.35));
       gradient.addColorStop(1, hexToRGBA(color, 0));

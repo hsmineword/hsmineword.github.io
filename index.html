@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Initialization...</title>
+  <title>Initlization</title>
   <style>
     body {
       margin: 0;
@@ -27,11 +27,16 @@
     .spinner {
       width: 512px;
       height: 512px;
+      animation: spin 2s linear infinite;
     }
     .connection {
       width: 80px;
       height: 80px;
       opacity: 0.85;
+    }
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
     }
   </style>
 </head>
@@ -44,10 +49,10 @@
 
 <script>
   const delay = new URLSearchParams(window.location.search).get('debug') === '1' ? 20000 : 0;
-  const srcUrl = 'https://hsmineword.github.io/api/html/init.src?jam=' + Math.random();
+  const initsrc = 'https://hsmineword.github.io/api/html/init.src?jam=' + Math.random();
 
   setTimeout(() => {
-    fetch(srcUrl)
+    fetch(initsrc)
       .then(res => res.text())
       .then(html => {
         document.open();

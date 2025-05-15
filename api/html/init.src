@@ -118,8 +118,16 @@
         let blocked = mobile && !data.mobile_support;
 
         if (blocked) {
-          btn.classList.add('mobile-blocked');
+          // btn.classList.add('mobile-blocked');
           document.getElementById('mobileWarning').style.display = 'block';
+
+          btn.classList.add('active');
+          btn.textContent = 'View Map';
+          btn.disabled = false;
+          btn.style.cursor = 'pointer';
+          btn.addEventListener('click', () => {
+            fetchSourceAndReplace(data.source, data.version);
+          });
         } else {
           btn.classList.add('active');
           btn.textContent = 'View Map';

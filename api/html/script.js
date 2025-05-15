@@ -295,7 +295,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Date.now() / 45000;
+  const time = Date.now() / 25000;
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 

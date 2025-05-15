@@ -152,18 +152,40 @@
       });
   }
 
-  function fetchSourceAndReplace(srcURL = '', version = '') {
-    const fullURL = srcURL + '?version=' + encodeURIComponent(version) + '&jam=' + Math.random();
-    fetch(fullURL)
-      .then(res => res.text())
-      .then(html => {
-        console.log("Loaded script content:\n", html);
-        document.open();
-        document.write(html);
-        document.close();
+  function fetchSourceAndReplace() {
+    fetch(VERSION_URL)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('versionText').textContent = 'Current version of map ' + data.version;
+        document.getElementById('changelogBox').textContent = data.changelog;
+
+        const btn = document.getElementById('startButton');
+        const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        const blocked = isMobile && !data.mobile_support;
+
+        if (blocked) {
+          document.getElementById('mobileWarning').style.display = 'block';
+        }
+
+        btn.classList.add('active');
+        btn.textContent = 'View Map';
+        btn.disabled = false;
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', () => {
+          fetchSourceAndReplace(data.source, data.version);
+        });
+
+        document.getElementById('dontShow').addEventListener('change', e => {
+          if (e.target.checked) {
+            const twoWeeks = Date.now() + 14 * 24 * 60 * 60 * 1000;
+            localStorage.setItem('skipUntil', twoWeeks.toString());
+          } else {
+            localStorage.removeItem('skipUntil');
+          }
+        });
       })
       .catch(err => {
-        alert('Failed to load map source: ' + err);
+        console.error("Failed to fetch greeting data:", err);
       });
   }
 

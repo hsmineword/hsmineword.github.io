@@ -349,7 +349,7 @@ function fetchGalaxyDataWrapper() {
 // Start fetching immediately and set interval
 function startGalaxyDataFetch() {
   fetchGalaxyDataWrapper();
-  setInterval(fetchGalaxyDataWrapper, 60000); // every minute
+  setInterval(fetchGalaxyDataWrapper, 600000); // every minute
 }
 
 startGalaxyDataFetch(); // Call once at start, end

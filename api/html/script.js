@@ -9,7 +9,7 @@ let drag = false;
 let startX, startY;
 
 const stars = [];
-const numStars = 99999910500;
+const numStars = 125000;
 const seed = Math.floor(Date.now() / 1000);
 const starContainer = document.createElement('div');
 starContainer.style.position = 'absolute';
@@ -32,8 +32,8 @@ const rand = seededRandom(seed);
 
 for (let i = 0; i < numStars; i++) {
   stars.push({
-    x: (rand() - 0.5) * 9999999999999999999999999999999999999,
-    y: (rand() - 0.5) * 9999999999999999999999999999999999999,
+    x: (rand() - 0.5) * 99999,
+    y: (rand() - 0.5) * 99999,
     r: rand() * 1.5 + 0.5
   });
 }

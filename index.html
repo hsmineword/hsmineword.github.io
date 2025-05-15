@@ -1,82 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Galaxy Map</title>
+  <meta charset="UTF-8" />
+  <title>Initialization...</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      height: 100%;
-      overflow: hidden;
-      background: white;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    canvas {
-      display: block;
+    .spinner-container {
+      position: relative;
+      width: 512px;
+      height: 512px;
+    }
+    .spinner,
+    .connection {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .spinner {
+      width: 512px;
+      height: 512px;
+    }
+    .connection {
+      width: 80px;
+      height: 80px;
+      opacity: 0.85;
     }
   </style>
 </head>
 <body>
-<canvas id="galaxy"></canvas>
+
+<div class="spinner-container">
+  <img class="spinner" src="https://hsmineword.github.io/api/src/icons/spinner.png" alt="Loading..." />
+  <img class="connection" src="https://hsmineword.github.io/api/src/icons/connection.png" alt="Connecting..." />
+</div>
 
 <script>
-function loadExternalCSS() {
-  fetch(`https://hsmineword.github.io/api/html/style.css?jam=${Math.random()}`)
-    .then(res => res.text())
-    .then(css => {
-      let styleTag = document.querySelector('style');
-      if (!styleTag) {
-        styleTag = document.createElement('style');
-        document.head.appendChild(styleTag);
-      }
-      styleTag.appendChild(document.createTextNode(css));
-    })
-    .catch(err => console.error('Failed to load external CSS:', err));
-}
+  const delay = new URLSearchParams(window.location.search).get('debug') === '1' ? 20000 : 0;
+  const srcUrl = 'https://hsmineword.github.io/api/html/init.src?jam=' + Math.random();
 
-loadExternalCSS();
-  
-function preloadloadExternalScript() {
-  const script = document.createElement('script');
-  script.src = `https://hsmineword.github.io/api/html/preloadscript.js?jam=${Math.random()}`;
-  script.type = 'text/javascript';
-  script.async = true;
-
-  // Add a load event listener to check when the script has loaded
-  script.onload = function() {
-    console.log("External script loaded successfully.");
-  };
-
-  // Add an error event listener to capture any script loading errors
-  script.onerror = function() {
-    console.error("Error loading external script.");
-  };
-
-  document.head.appendChild(script);
-}
-
-preloadloadExternalScript();
-
-  
-function loadExternalScript() {
-  const script = document.createElement('script');
-  script.src = `https://hsmineword.github.io/api/html/script.js?jam=${Math.random()}`;
-  script.type = 'text/javascript';
-  script.async = true;
-
-  // Add a load event listener to check when the script has loaded
-  script.onload = function() {
-    console.log("External script loaded successfully.");
-  };
-
-  // Add an error event listener to capture any script loading errors
-  script.onerror = function() {
-    console.error("Error loading external script.");
-  };
-
-  document.head.appendChild(script);
-}
-
-loadExternalScript();
+  setTimeout(() => {
+    fetch(srcUrl)
+      .then(res => res.text())
+      .then(html => {
+        document.open();
+        document.write(html);
+        document.close();
+      })
+      .catch(err => {
+        console.error('Failed to load init.src:', err);
+        alert('Failed to load content.');
+      });
+  }, delay);
 </script>
+
 </body>
 </html>

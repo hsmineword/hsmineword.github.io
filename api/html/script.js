@@ -81,11 +81,31 @@ function draw() {
 draw();
 
 // Zoom and pan
+// canvas.addEventListener('wheel', e => {
+//  e.preventDefault();
+//  const zoomFactor = 1.1;
+//  zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
+//});
+
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
-  zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
+  const minZoom = 0.032349184307606846;
+  const maxZoom = 1.210000000000005;
+
+  if (e.deltaY < 0) {
+    zoom *= zoomFactor; // zoom in
+  } else {
+    zoom /= zoomFactor; // zoom out
+  }
+
+  // Clamp zoom between minZoom and maxZoom
+  zoom = Math.min(maxZoom, Math.max(minZoom, zoom));
+
+  console.log('Zoom:', zoom);
 });
+
+
 canvas.addEventListener('mousedown', e => {
   drag = true;
   startX = e.clientX;

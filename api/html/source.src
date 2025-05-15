@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Galaxy Map</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: white;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<canvas id="galaxy"></canvas>
+
+<script>
+function loadExternalCSS() {
+  fetch(`https://hsmineword.github.io/api/html/style.css?jam=${Math.random()}`)
+    .then(res => res.text())
+    .then(css => {
+      let styleTag = document.querySelector('style');
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        document.head.appendChild(styleTag);
+      }
+      styleTag.appendChild(document.createTextNode(css));
+    })
+    .catch(err => console.error('Failed to load external CSS:', err));
+}
+
+loadExternalCSS();
+  
+function preloadloadExternalScript() {
+  const script = document.createElement('script');
+  script.src = `https://hsmineword.github.io/api/html/preloadscript.js?jam=${Math.random()}`;
+  script.type = 'text/javascript';
+  script.async = true;
+
+  // Add a load event listener to check when the script has loaded
+  script.onload = function() {
+    console.log("External script loaded successfully.");
+  };
+
+  // Add an error event listener to capture any script loading errors
+  script.onerror = function() {
+    console.error("Error loading external script.");
+  };
+
+  document.head.appendChild(script);
+}
+
+preloadloadExternalScript();
+
+  
+function loadExternalScript() {
+  const script = document.createElement('script');
+  script.src = `https://hsmineword.github.io/api/html/script.js?jam=${Math.random()}`;
+  script.type = 'text/javascript';
+  script.async = true;
+
+  // Add a load event listener to check when the script has loaded
+  script.onload = function() {
+    console.log("External script loaded successfully.");
+  };
+
+  // Add an error event listener to capture any script loading errors
+  script.onerror = function() {
+    console.error("Error loading external script.");
+  };
+
+  document.head.appendChild(script);
+}
+
+loadExternalScript();
+</script>
+</body>
+</html>

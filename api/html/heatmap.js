@@ -93,7 +93,7 @@ coords.forEach(([x, y]) => {
 });
 
 // Final radius includes zoom influence + padding
-const baseRadius = maxDistance + (zoomLevel * 20) + 30; // tweak multipliers and padding as needed
+const baseRadius = maxDistance + (zoomLevel * 20) + 130; // tweak multipliers and padding as needed
 
       
 

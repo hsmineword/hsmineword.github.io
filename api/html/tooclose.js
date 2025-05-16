@@ -1,7 +1,7 @@
 // Auto-separates overlapping .map-object elements, skipping "holy" objects but moving others around them
 (function separateOverlappingObjects() {
-  const MIN_DISTANCE = 75; // Minimum pixels between objects (adjust as needed)
-  const PUSH_FORCE = 67;  // How far to push per tick
+  const MIN_DISTANCE = 135; // Minimum pixels between objects (adjust as needed)
+  const PUSH_FORCE = 145;  // How far to push per tick
 
   function getPosition(el) {
     return {

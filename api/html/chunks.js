@@ -11,7 +11,7 @@ let chunkOverlays = [];
 
 function createChunkCircle(x) {
   const div = document.createElement('div');
-  div.className = 'chunk-marker';
+  div.className = 'map-object';
   div.style.position = 'absolute';
   div.style.display = 'block';
   div.style.width = '35px';

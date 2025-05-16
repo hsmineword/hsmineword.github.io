@@ -13,11 +13,11 @@ function createChunkCircle(x) {
   const div = document.createElement('div');
   div.className = 'chunk-marker';
   div.style.position = 'absolute';
-  div.style.width = '10px';
-  div.style.height = '10px';
+  div.style.width = '15px';
+  div.style.height = '15px';
   div.style.borderRadius = '50%';
   div.style.backgroundColor = 'darkred';
-  div.style.zIndex = 500;
+  div.style.zIndex = 5000000000;
   div.title = `X: ${x}`;
   document.body.appendChild(div);
   chunkOverlays.push({ el: div, x });

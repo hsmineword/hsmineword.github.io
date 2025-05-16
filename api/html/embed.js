@@ -145,6 +145,18 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   content.appendChild(video);
 }
 
+  if (Array.isArray(data.video?.url)) {
+  data.video.url.forEach(videoUrl => {
+    const video = document.createElement('video');
+    video.src = videoUrl;
+    video.controls = true;
+    video.style.maxWidth = '100%';
+    video.style.borderRadius = '6px';
+    video.style.marginTop = '10px';
+    content.appendChild(video);
+  });
+}
+
   // Thumbnail (optional small image on top right)
   if (data.thumbnail?.url) {
     const thumb = document.createElement('img');

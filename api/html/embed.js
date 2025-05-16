@@ -27,7 +27,11 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   // Remove previous embeds
   document.querySelectorAll('.discord-embed').forEach(el => el.remove());
 
-  const embed = document.createElement('div');
+// Create a scrollable wrapper for inner content
+const content = document.createElement('div');
+content.style.maxHeight = '80vh'; // 80% of viewport height
+content.style.overflowY = 'auto';
+content.style.paddingRight = '6px'; // optional, space for scrollbar
   embed.className = 'discord-embed';
   embed.style.position = 'absolute';
   embed.style.left = `${position.x}px`;
@@ -135,15 +139,15 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
     content.appendChild(img);
   }
 
-  if (data.video?.url) {
-  const video = document.createElement('video');
-  video.src = data.video.url;
-  video.controls = true;
-  video.style.maxWidth = '100%';
-  video.style.borderRadius = '6px';
-  video.style.marginTop = '10px';
-  content.appendChild(video);
-}
+//  if (data.video?.url) {
+//  const video = document.createElement('video');
+//  video.src = data.video.url;
+//  video.controls = true;
+//  video.style.maxWidth = '100%';
+//  video.style.borderRadius = '6px';
+//  video.style.marginTop = '10px';
+//  content.appendChild(video);
+//}
 
   if (Array.isArray(data.video?.url)) {
   data.video.url.forEach(videoUrl => {

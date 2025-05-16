@@ -27,11 +27,7 @@ function showDiscordEmbed(data, position = { x: 20, y: 20 }) {
   // Remove previous embeds
   document.querySelectorAll('.discord-embed').forEach(el => el.remove());
 
-// Create a scrollable wrapper for inner content
-const content = document.createElement('div');
-content.style.maxHeight = '80vh'; // 80% of viewport height
-content.style.overflowY = 'auto';
-content.style.paddingRight = '6px'; // optional, space for scrollbar
+const embed = document.createElement('div');
   embed.className = 'discord-embed';
   embed.style.position = 'absolute';
   embed.style.left = `${position.x}px`;
@@ -65,7 +61,12 @@ content.style.paddingRight = '6px'; // optional, space for scrollbar
   embed.appendChild(closeBtn);
 
   // Create a wrapper for inner content
-  const content = document.createElement('div');
+// Create a scrollable wrapper for inner content
+const content = document.createElement('div');
+content.style.maxHeight = '80vh'; // 80% of viewport height
+content.style.overflowY = 'auto';
+content.style.paddingRight = '6px'; // optional, space for scrollbar
+
 
   // Author
   if (data.author) {

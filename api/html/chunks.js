@@ -13,9 +13,10 @@ function createChunkCircle(x) {
   const div = document.createElement('div');
   div.className = 'chunk-marker';
   div.style.position = 'absolute';
-  div.style.width = '15px';
-  div.style.height = '15px';
-  div.style.borderRadius = '50%';
+  div.style.display = 'block';
+  div.style.width = '35px';
+  div.style.height = '35px';
+  div.style.borderRadius = '100%';
   div.style.backgroundColor = 'darkred';
   div.style.zIndex = 5000000000;
   div.title = `X: ${x}`;

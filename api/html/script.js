@@ -436,3 +436,19 @@ function loadGalaxySearchBar() {
   document.head.appendChild(script);
 }
 loadGalaxySearchBar();
+
+
+
+
+
+const originalUpdateGalaxyObjects = window.updateGalaxyObjects;
+
+window.updateGalaxyObjects = function(objects) {
+  originalUpdateGalaxyObjects(objects);
+
+  // Delay a bit to ensure DOM elements exist
+  setTimeout(() => {
+    console.log('[TooCloseFix] Running separation after galaxy update...');
+    separateObjects();
+  }, 500);
+};

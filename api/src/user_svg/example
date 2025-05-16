@@ -1,0 +1,16 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background image as base64 -->
+  <image
+    href="data:image/png;base64,BASE64_STRING_HERE"
+    x="0" y="0"
+    width="32" height="32"
+    preserveAspectRatio="none"
+  />
+
+  <!-- Remote image in bottom-right corner -->
+  <image
+    x="17" y="17"
+    width="15" height="15"
+    href="https://user.id/$id.gif"
+  />
+</svg>

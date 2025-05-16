@@ -41,7 +41,7 @@ function renderConstellationHeatmaps() {
       groups[map_constellation_id].objects.push(el);
     });
 
-    console.log('[Heatmap] Found constellation groups:', Object.keys(groups));
+    // console.log('[Heatmap] Found constellation groups:', Object.keys(groups));
 
     // Clear all canvases
     for (const id in heatmapLayers) {
@@ -67,7 +67,7 @@ function renderConstellationHeatmaps() {
         canvas.height = galaxyCanvas.height;
         container.appendChild(canvas);
         heatmapLayers[constellationId] = canvas;
-        console.log(`[Heatmap] Created layer for constellation: ${constellationId}`);
+        // console.log(`[Heatmap] Created layer for constellation: ${constellationId}`);
       }
 
       const ctx = canvas.getContext('2d');
@@ -107,7 +107,7 @@ const baseRadius = maxDistance + (zoomLevel * 20) + 130; // tweak multipliers an
       ctx.arc(avgX, avgY, radius, 0, 2 * Math.PI);
       ctx.fill();
 
-      console.log(`[Heatmap] Drew for ${constellationId} at (${avgX.toFixed(1)}, ${avgY.toFixed(1)}) with radius ${radius.toFixed(1)} and color ${color}`);
+      // console.log(`[Heatmap] Drew for ${constellationId} at (${avgX.toFixed(1)}, ${avgY.toFixed(1)}) with radius ${radius.toFixed(1)} and color ${color}`);
     });
   }
 

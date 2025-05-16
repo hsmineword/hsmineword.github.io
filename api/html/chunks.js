@@ -19,6 +19,10 @@ function createChunkCircle(x) {
   div.style.backgroundColor = 'darkred';
   div.style.zIndex = 5000000000;
   div.title = `X: ${x}`;
+
+  // Add the span inside the div
+  div.innerHTML = '<span style="font-weight: bold; color: darkred;">|</span>';
+
   document.body.appendChild(div);
   chunkOverlays.push({ el: div, x });
 }

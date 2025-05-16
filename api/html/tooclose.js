@@ -1,35 +1,16 @@
 // Auto-separates overlapping .map-object elements, skipping "holy" objects but moving others around them
-(function smartSeparateObjects() {
+(function separateOverlappingObjectsAccurately() {
   const MIN_DISTANCE = 135;
   const STEP_DISTANCE = 50;
   const MAX_ATTEMPTS = 1000;
 
-  function getPosition(el) {
-    const computedStyle = window.getComputedStyle(el);
-    return {
-      x: parseFloat(computedStyle.left) || 0,
-      y: parseFloat(computedStyle.top) || 0
-    };
+  function isHoly(obj) {
+    return (obj.cords.x === 0 && obj.cords.y === 0) || obj.map_is_anvil === true;
   }
 
-  function setPosition(el, x, y) {
-    el.style.position = 'absolute'; // Force absolute positioning
-    el.style.left = `${x}px`;
-    el.style.top = `${y}px`;
-  }
-
-  function isHoly(el) {
-    try {
-      const payload = JSON.parse(el.getAttribute('custompayload'));
-      return (payload?.cords?.x === 0 && payload?.cords?.y === 0) || payload?.map_is_anvil === true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function distance(p1, p2) {
-    const dx = p1.x - p2.x;
-    const dy = p1.y - p2.y;
+  function distance(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
     return Math.sqrt(dx * dx + dy * dy);
   }
 
@@ -37,31 +18,37 @@
     return others.some(p => distance(pos, p) < MIN_DISTANCE);
   }
 
-  function getNextPosition(baseX, baseY, angleDeg, radius) {
-    const angleRad = angleDeg * (Math.PI / 180);
+  function getNextPosition(angleDeg, radius) {
+    const rad = angleDeg * (Math.PI / 180);
     return {
-      x: baseX + Math.cos(angleRad) * radius,
-      y: baseY + Math.sin(angleRad) * radius
+      x: Math.cos(rad) * radius,
+      y: Math.sin(rad) * radius,
     };
   }
 
-  async function repositionOneByOne(objects) {
-    const placedPositions = [];
+  async function separateObjects() {
+    if (!window.mapObjects || typeof mapObjects.forEach !== 'function') {
+      console.warn('[TooCloseFix] mapObjects not ready. Retrying...');
+      setTimeout(separateObjects, 500);
+      return;
+    }
 
-    for (const el of objects) {
-      if (isHoly(el)) {
-        const holyPos = getPosition(el);
-        placedPositions.push(holyPos);
-        continue;
+    console.log('[TooCloseFix] Starting separation...');
+    const placed = [];
+
+    mapObjects.forEach(obj => {
+      if (isHoly(obj)) {
+        placed.push({ x: obj._pos.x, y: obj._pos.y });
+        return;
       }
 
-      let attempts = 0;
       let angle = 0;
       let radius = STEP_DISTANCE;
-      let newPos = getPosition(el);
+      let attempts = 0;
+      let newPos = { x: 0, y: 0 };
 
-      while (isTooClose(newPos, placedPositions) && attempts < MAX_ATTEMPTS) {
-        newPos = getNextPosition(0, 0, angle, radius);
+      while (isTooClose(newPos, placed) && attempts < MAX_ATTEMPTS) {
+        newPos = getNextPosition(angle, radius);
         angle += 15;
         if (angle >= 360) {
           angle = 0;
@@ -70,28 +57,16 @@
         attempts++;
       }
 
-      setPosition(el, newPos.x, newPos.y);
-      placedPositions.push(newPos);
+      obj._pos.x = newPos.x;
+      obj._pos.y = newPos.y;
+      placed.push(newPos);
+      console.log(`[TooCloseFix] Moved ${obj.map_name} to (${newPos.x.toFixed(1)}, ${newPos.y.toFixed(1)})`);
+    });
 
-      await new Promise(resolve => setTimeout(resolve, 30)); // Delay per item for visible movement
-    }
-
-    console.log("[smart-separator] Done spacing all non-holy objects.");
+    console.log('[TooCloseFix] All objects processed.');
   }
 
-  function startWhenReady() {
-    const objects = Array.from(document.querySelectorAll('.map-object'));
-    if (objects.length === 0) {
-      console.warn('[smart-separator] No .map-object elements found. Retrying...');
-      setTimeout(startWhenReady, 500);
-      return;
-    }
-
-    console.log(`[smart-separator] Found ${objects.length} .map-object(s). Beginning spacing...`);
-    repositionOneByOne(objects);
-  }
-
-  startWhenReady();
+  separateObjects();
 })();
 
 

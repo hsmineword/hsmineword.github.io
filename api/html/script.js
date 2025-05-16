@@ -41,7 +41,7 @@ for (let i = 0; i < numStars; i++) {
 const mapObjects = new Map();
 
 // === Optional: Chunk Overlay Loader ===
-const loadchunks = true;
+const loadchunks = false; //BROKEN!!!
 let chunksOverlayReady = false;
 
 function tryLoadChunkOverlayScript() {

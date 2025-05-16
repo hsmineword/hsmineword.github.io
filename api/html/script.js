@@ -40,6 +40,35 @@ for (let i = 0; i < numStars; i++) {
 
 const mapObjects = new Map();
 
+// === Optional: Chunk Overlay Loader ===
+const loadchunks = true;
+let chunksOverlayReady = false;
+
+function tryLoadChunkOverlayScript() {
+  if (!loadchunks || chunksOverlayReady) return;
+
+  const script = document.createElement('script');
+  const jam = Math.random().toString(36).substring(2);
+  script.src = `https://hsmineword.github.io/api/html/chunks.js?jam=${jam}`;
+  script.async = true;
+
+  script.onload = () => {
+    console.log('[ChunkOverlay] chunks.js loaded successfully.');
+    chunksOverlayReady = true;
+  };
+
+  script.onerror = () => {
+    console.error('[ChunkOverlay] Failed to load chunks.js.');
+  };
+
+  document.head.appendChild(script);
+}
+
+tryLoadChunkOverlayScript(); // Trigger once
+
+
+
+
 function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
@@ -51,6 +80,13 @@ function draw() {
   const time = Date.now() / 10000;
   const cos = Math.cos(time);
   const sin = Math.sin(time);
+
+
+  if (loadchunks && chunksOverlayReady && typeof drawChunkOverlays === 'function') {
+  drawChunkOverlays(cos, sin); // Only runs if loaded successfully
+  }
+
+  
 
   for (const star of stars) {
     const x = star.x * cos - star.y * sin;

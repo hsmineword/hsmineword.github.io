@@ -126,7 +126,7 @@ draw();
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
-  const minZoom = 0.032349184307606846;
+  const minZoom = 1.210000000000005;
   const maxZoom = 1.210000000000005;
 
   if (e.deltaY < 0) {

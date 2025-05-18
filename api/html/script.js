@@ -10,7 +10,7 @@ let startX, startY;
 
 const stars = [];
 const numStars = 225000;
-const seed = Math.floor(Date.now() / 1000);
+const seed = Math.floor(Date.now() / 100000000000);
 const starContainer = document.createElement('div');
 starContainer.style.position = 'absolute';
 starContainer.style.top = 0;
@@ -25,7 +25,7 @@ function seededRandom(seed) {
     seed ^= seed << 13;
     seed ^= seed >> 17;
     seed ^= seed << 5;
-    return ((seed < 0 ? ~seed + 1 : seed) % 1000);
+    return ((seed < 0 ? ~seed + 1 : seed) %  100000000000);
   };
 }
 const rand = seededRandom(seed);

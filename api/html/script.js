@@ -3,6 +3,12 @@ const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
 
+
+let lastDrawTime = 0;
+console.log(lastDrawTime);
+const minInterval = 30000;
+
+
 let zoom = 0.10;
 let offsetX = 0, offsetY = 0;
 let drag = false;
@@ -330,9 +336,9 @@ function updateGalaxyObjects(objects) {
 }
 
 // Track each draw cycle and object placement
-let lastDrawTime = 0;
-console.log(lastDrawTime);
-const minInterval = 30000; // milliseconds between frames (10 FPS)
+// let lastDrawTime = 0;
+// console.log(lastDrawTime);
+// const minInterval = 30000; // milliseconds between frames (10 FPS)
 
 function draw(timestamp) {
   if (timestamp - lastDrawTime >= minInterval) {

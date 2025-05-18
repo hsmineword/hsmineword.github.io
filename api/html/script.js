@@ -9,7 +9,7 @@ let drag = false;
 let startX, startY;
 
 const stars = [];
-const numStars = 225000;
+const numStars = 425000;
 const seed = Math.floor(Date.now() / 1000);
 const starContainer = document.createElement('div');
 starContainer.style.position = 'absolute';
@@ -77,7 +77,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Math.floor(Date.now() / 1000000000);
+  const time = Math.floor(Date.now() / 10000);
 console.log(time);
   const cos = Math.cos(time);
   const sin = Math.sin(time);

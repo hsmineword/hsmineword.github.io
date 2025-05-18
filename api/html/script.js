@@ -1,17 +1,8 @@
+
 const canvas = document.getElementById('galaxy');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
-
-
-let lastDrawTime = 0;
-let usedDrawTime = 0;
-console.log(lastDrawTime);
-// let usedDrawTime = usedDrawTime + 1;
-    console.log("Draws total:");
-console.log(usedDrawTime);
-const minInterval = 30000;
-
 
 let zoom = 0.10;
 let offsetX = 0, offsetY = 0;
@@ -340,17 +331,7 @@ function updateGalaxyObjects(objects) {
 }
 
 // Track each draw cycle and object placement
-// let lastDrawTime = 0;
-// console.log(lastDrawTime);
-// const minInterval = 30000; // milliseconds between frames (10 FPS)
-
-function draw(timestamp) {
-  if ((timestamp - lastDrawTime >= minInterval) || usedDrawTime < 1) {
-    lastDrawTime = timestamp;
-    console.log(lastDrawTime);
-
-    // your drawing logic here...
-
+function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, width, height);
@@ -389,20 +370,11 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // TH
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
-  // requestAnimationFrame(draw);
-      usedDrawTime++;
-    console.log("Draws total:");
-console.log(usedDrawTime);
-// end
-  }
-
   requestAnimationFrame(draw);
 }
 
-requestAnimationFrame(draw);
-// setInterval(draw, 30000); // Start the drawing loop
-// console.log("setInterval(draw, 30000);");
-console.log(lastDrawTime);
+setInterval(draw, 30000); // Start the drawing loop
+console.log("setInterval(draw, 30000);");
 
 
 

@@ -372,7 +372,8 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // TH
   requestAnimationFrame(draw);
 }
 
-draw(); // Start the drawing loop
+setInterval(draw, 30000); // Start the drawing loop
+console.log("setInterval(draw, 30000);");
 
 
 

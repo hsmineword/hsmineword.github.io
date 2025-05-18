@@ -72,8 +72,14 @@ tryLoadChunkOverlayScript(); // Trigger once
 
 
 
-function draw() {
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+let lastDrawTime = 0;
+const minInterval = 3000000;
+
+function draw(timestamp) {
+  if (timestamp - lastDrawTime >= minInterval) {
+    lastDrawTime = timestamp;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, width, height);
 
@@ -118,9 +124,14 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
   }
 
   requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
 }
+
+requestAnimationFrame(draw);
 // draw();
-setInterval(draw, 30000);
+// setInterval(draw, 30000);
 
 // Zoom and pan
 // canvas.addEventListener('wheel', e => {

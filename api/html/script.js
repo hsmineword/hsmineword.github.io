@@ -77,7 +77,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Math.floor(Date.now() / 10000);
+  const time = Date.now() / 10000;
 console.log(time);
   const cos = Math.cos(time);
   const sin = Math.sin(time);

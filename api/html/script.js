@@ -363,10 +363,10 @@ try {
 
 let retrievedTime = localStorage.getItem('_debug_time');
 if(retrievedTime){
-    console.log("Time from localStorage:", parseInt(retrievedTime)); //ParseInt converts string back to number
+    // console.log("Time from localStorage:", parseInt(retrievedTime)); //ParseInt converts string back to number
 }
 
-console.log("Global variable _op_time:", window._op_time);
+// console.log("Global variable _op_time:", window._op_time);
 
   const cos = Math.cos(time);
   const sin = Math.sin(time);

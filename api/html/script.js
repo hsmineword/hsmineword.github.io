@@ -25,7 +25,7 @@ function seededRandom(seed) {
     seed ^= seed << 13;
     seed ^= seed >> 17;
     seed ^= seed << 5;
-    return ((seed < 0 ? ~seed + 1 : seed) % 1000) / 1000;
+    return ((seed < 0 ? ~seed + 1 : seed) % 1000);
   };
 }
 const rand = seededRandom(seed);
@@ -77,7 +77,8 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Date.now() / 7000000;
+  const time = Math.floor(Date.now() / 1000000000);
+console.log(time);
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 

@@ -1,0 +1,3 @@
+- Slow down star rotation
+- Fix search bar to fetch cords wich rotation
+- drmineword.html

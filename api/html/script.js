@@ -350,9 +350,6 @@ function draw(timestamp) {
     console.log(lastDrawTime);
 
     // your drawing logic here...
-    let usedDrawTime = usedDrawTime + 1;
-    console.log("Draws total:");
-console.log(usedDrawTime);
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
@@ -393,6 +390,9 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // TH
   }
 
   // requestAnimationFrame(draw);
+      let usedDrawTime = usedDrawTime + 1;
+    console.log("Draws total:");
+console.log(usedDrawTime);
 // end
   }
 

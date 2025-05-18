@@ -83,6 +83,7 @@ function draw() {
   const mercuryOrbitMs = 86400000; // 7,603,200,000
 const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
 
+
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
@@ -340,6 +341,33 @@ function draw() {
 
   const mercuryOrbitMs = 86400000; // 7,603,200,000
 const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // THIS SLOW DOWN IDK?
+
+try {
+  localStorage.setItem('_debug_time', time);
+} catch (error) {
+  console.error("Error storing time in localStorage:", error);
+  // Consider alternative storage or handling based on your application's needs.  
+  // For example, you might alert the user or use a fallback mechanism.
+}
+
+
+// Create a global variable.  This method avoids potential naming conflicts.
+(function() {
+  window._op_time = time;
+})();
+
+
+//Example of accessing the variables:
+
+//From another script or later in the same script:
+
+let retrievedTime = localStorage.getItem('_debug_time');
+if(retrievedTime){
+    console.log("Time from localStorage:", parseInt(retrievedTime)); //ParseInt converts string back to number
+}
+
+console.log("Global variable _op_time:", window._op_time);
+
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 

@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
 
-let zoom = 1;
+let zoom = 0.10;
 let offsetX = 0, offsetY = 0;
 let drag = false;
 let startX, startY;
@@ -127,8 +127,10 @@ draw();
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
-  const minZoom = 0.07;
-  const maxZoom = 1.210000000000005;
+  //const minZoom = 0.07;
+  //const maxZoom = 1.210000000000005;
+const minZoom = 0.00000000000000000000000000000007;
+const maxZoom = 1.210000000000005;
 
   if (e.deltaY < 0) {
     zoom *= zoomFactor; // zoom in

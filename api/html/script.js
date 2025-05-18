@@ -390,7 +390,7 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // TH
   }
 
   // requestAnimationFrame(draw);
-      let usedDrawTime = usedDrawTime + 1;
+      usedDrawTime++;
     console.log("Draws total:");
 console.log(usedDrawTime);
 // end

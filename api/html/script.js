@@ -119,7 +119,8 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
 
   requestAnimationFrame(draw);
 }
-draw();
+// draw();
+setInterval(draw, 30000);
 
 // Zoom and pan
 // canvas.addEventListener('wheel', e => {

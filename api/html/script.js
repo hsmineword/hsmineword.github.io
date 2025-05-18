@@ -7,6 +7,9 @@ let height = canvas.height = window.innerHeight;
 let lastDrawTime = 0;
 let usedDrawTime = 0;
 console.log(lastDrawTime);
+// let usedDrawTime = usedDrawTime + 1;
+    console.log("Draws total:");
+console.log(usedDrawTime);
 const minInterval = 30000;
 
 

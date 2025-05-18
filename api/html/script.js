@@ -342,8 +342,11 @@ function updateGalaxyObjects(objects) {
 }
 
 // Track each draw cycle and object placement
-function draw() {
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+function draw(timestamp) {
+  if (timestamp - lastDrawTime >= minInterval) {
+    lastDrawTime = timestamp;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, width, height);
 
@@ -379,12 +382,15 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // TH
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
+  
   }
 
   requestAnimationFrame(draw);
 }
 
-draw(); // Start the drawing loop
+requestAnimationFrame(draw);
+
+// draw(); // Start the drawing loop
 
 
 

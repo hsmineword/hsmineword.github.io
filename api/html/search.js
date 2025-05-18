@@ -72,7 +72,7 @@
     offsetY = -obj._pos.y * zoom;
 
     // Calculate screen position
-    const time = Date.now() / 10000;
+    const time = Date.now() / 70000;
     const cos = Math.cos(time);
     const sin = Math.sin(time);
     const worldX = obj._pos.x;

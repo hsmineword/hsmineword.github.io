@@ -80,7 +80,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const mercuryOrbitMs = 88 * 24 * 60 * 60 * 1000; // 7,603,200,000
+  const mercuryOrbitMs = 1 * 24 * 60 * 60 * 1000; // 7,603,200,000
 const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
 
   const cos = Math.cos(time);
@@ -338,7 +338,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const mercuryOrbitMs = 88 * 24 * 60 * 60 * 1000; // 7,603,200,000
+  const mercuryOrbitMs = 1 * 24 * 60 * 60 * 1000; // 7,603,200,000
 const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // THIS SLOW DOWN IDK?
   const cos = Math.cos(time);
   const sin = Math.sin(time);

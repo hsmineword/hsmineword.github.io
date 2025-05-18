@@ -33,9 +33,9 @@ const rand = seededRandom(seed);
 
 for (let i = 0; i < numStars; i++) {
   stars.push({
-const galaxySize = 90000; // or whatever value you want
-x: (rand() - 0.5) * galaxySize,
-y: (rand() - 0.5) * galaxySize,
+// const galaxySize = 90000; // or whatever value you want
+x: (rand() - 0.5) * 90000,
+y: (rand() - 0.5) * 90000,
 
     r: rand() * 1.5 + 0.5
   });

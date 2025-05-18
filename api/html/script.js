@@ -25,7 +25,8 @@ function seededRandom(seed) {
     seed ^= seed << 13;
     seed ^= seed >> 17;
     seed ^= seed << 5;
-    return ((seed < 0 ? ~seed + 1 : seed) %  1000);
+    return ((seed < 0 ? ~seed + 1 : seed) % 1000) / 1000;
+
   };
 }
 const rand = seededRandom(seed);
@@ -77,8 +78,8 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Date.now() / 10000;
-console.log(time);
+  const time = Date.now() / 2500000; // 100x slower
+
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
@@ -334,7 +335,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Date.now() / 25000;
+  const time = Date.now() / 2500000; // THIS SLOW DOWN IDK?
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 

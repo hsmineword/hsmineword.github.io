@@ -9,7 +9,7 @@ let drag = false;
 let startX, startY;
 
 const stars = [];
-const numStars = 225000;
+const numStars = 275000;
 const seed = Math.floor(Date.now() / 1000);
 const starContainer = document.createElement('div');
 starContainer.style.position = 'absolute';
@@ -33,8 +33,10 @@ const rand = seededRandom(seed);
 
 for (let i = 0; i < numStars; i++) {
   stars.push({
-    x: (rand() - 0.5) * 99999,
-    y: (rand() - 0.5) * 99999,
+const galaxySize = 90000; // or whatever value you want
+x: (rand() - 0.5) * galaxySize,
+y: (rand() - 0.5) * galaxySize,
+
     r: rand() * 1.5 + 0.5
   });
 }
@@ -78,7 +80,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Date.now() / 2500000; // 100x slower
+  const time = (Date.now() % 7603200000) / 7603200000 * 2 * Math.PI; // 100x slower
 
   const cos = Math.cos(time);
   const sin = Math.sin(time);
@@ -335,7 +337,7 @@ function draw() {
   ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
   ctx.scale(zoom, zoom);
 
-  const time = Date.now() / 2500000; // THIS SLOW DOWN IDK?
+  const time = (Date.now() % 7603200000) / 7603200000 * 2 * Math.PI; // THIS SLOW DOWN IDK?
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 

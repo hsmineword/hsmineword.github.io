@@ -72,14 +72,8 @@ tryLoadChunkOverlayScript(); // Trigger once
 
 
 
-let lastDrawTime = 0;
-const minInterval = 3000000;
-
-function draw(timestamp) {
-  if (timestamp - lastDrawTime >= minInterval) {
-    lastDrawTime = timestamp;
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, width, height);
 
@@ -124,14 +118,8 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
   }
 
   requestAnimationFrame(draw);
-  }
-
-  requestAnimationFrame(draw);
 }
-
-requestAnimationFrame(draw);
-// draw();
-// setInterval(draw, 30000);
+draw();
 
 // Zoom and pan
 // canvas.addEventListener('wheel', e => {
@@ -342,11 +330,8 @@ function updateGalaxyObjects(objects) {
 }
 
 // Track each draw cycle and object placement
-function draw(timestamp) {
-  if (timestamp - lastDrawTime >= minInterval) {
-    lastDrawTime = timestamp;
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, width, height);
 
@@ -382,15 +367,12 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI; // TH
     el.style.left = `${screenX}px`;
     el.style.top = `${screenY}px`;
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
-  
   }
 
   requestAnimationFrame(draw);
 }
 
-requestAnimationFrame(draw);
-
-// draw(); // Start the drawing loop
+draw(); // Start the drawing loop
 
 
 

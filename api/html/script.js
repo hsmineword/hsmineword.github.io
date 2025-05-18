@@ -5,6 +5,7 @@ let height = canvas.height = window.innerHeight;
 
 
 let lastDrawTime = 0;
+let usedDrawTime = 0;
 console.log(lastDrawTime);
 const minInterval = 30000;
 
@@ -341,11 +342,14 @@ function updateGalaxyObjects(objects) {
 // const minInterval = 30000; // milliseconds between frames (10 FPS)
 
 function draw(timestamp) {
-  if (timestamp - lastDrawTime >= minInterval) {
+  if ((timestamp - lastDrawTime >= minInterval) || usedDrawTime < 1) {
     lastDrawTime = timestamp;
     console.log(lastDrawTime);
 
     // your drawing logic here...
+    let usedDrawTime = usedDrawTime + 1;
+    console.log("Draws total:");
+console.log(usedDrawTime);
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#000';

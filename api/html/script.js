@@ -9,7 +9,7 @@ let drag = false;
 let startX, startY;
 
 const stars = [];
-const numStars = 425000;
+const numStars = 225000;
 const seed = Math.floor(Date.now() / 1000);
 const starContainer = document.createElement('div');
 starContainer.style.position = 'absolute';

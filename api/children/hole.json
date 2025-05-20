@@ -8,7 +8,7 @@
   "map_icon": "https://hsmineword.github.io/api/src/Other/blackhole3.webp",
   "map_name": "[REDACTED]",
   "map_constellation_id": "alpha-03",
-  "map_is_anvil": true,
+  "map_is_anvil": false,
   "interaction_on_click": {
     "type": "discord_embed",
     "data": {

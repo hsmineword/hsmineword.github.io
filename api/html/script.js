@@ -74,7 +74,7 @@ tryLoadChunkOverlayScript(); // Trigger once
 
 
 // ✅ Declare constants FIRST
-const ORBIT_PERIOD_MS = 86400000; // 24 hours
+// const ORBIT_PERIOD_MS = 86400000; // 24 hours
 
 let drawCount = 0;
 let drawInterval;

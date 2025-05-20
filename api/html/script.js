@@ -482,7 +482,7 @@ function loadGalaxySearchBar() {
 
   document.head.appendChild(script);
 }
-// loadGalaxySearchBar();
+loadGalaxySearchBar();
 
 
 

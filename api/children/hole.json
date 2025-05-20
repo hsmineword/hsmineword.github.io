@@ -1,0 +1,44 @@
+{
+  "id": "UNKOWN",
+  "heatmaphex": "#ff6600",
+  "cords": {
+    "x": 27,
+    "y": 4
+  },
+  "map_icon": "https://hsmineword.github.io/api/src/Other/blackhole3.webp",
+  "map_name": "[REDACTED]",
+  "map_constellation_id": "alpha-03",
+  "map_is_anvil": true,
+  "interaction_on_click": {
+    "type": "discord_embed",
+    "data": {
+      "title": "[REDACTED]",
+      "description": "**⚠ Partially unclassified document ⚠**\n\nThe **[REDACTED]** object appears to be within short range of our station.\nHowever, all attempts at deeper analysis and **[REDACTED]** have failed.\n\nAnything that comes within the **[REDACTED]** effect is **[REDACTED]** during the **[REDACTED]** process.\n\nThe object seems to be a ẉ̸͆̋ő̶̜̙̐r̸̡̜̥̓̐̈m̸͚̩͐̎h̷͈̋̅͝ơ̶̟l̶͉͕͝ĕ̵̢͘\n**[Further classified data restricted]**",
+      "color": 3870057,
+      "fields": [
+        {
+          "name": "Class",
+          "value": "\nApollyon"
+        },
+        {
+          "name": "Containing procedure",
+          "value": "\nKeep shields powered by **[REDACTED]** running 24/7"
+        },
+        {
+          "name": "Type",
+          "value": "\nSpace-time refraction object"
+        },
+        {
+          "name": "Status",
+          "value": "\nAlive, inactive"
+        }
+      ],
+      "footer": {
+        "text": "Note: Don't let this come back to life"
+      },
+      "image": {
+        "url": "https://hsmineword.github.io/api/src/Other/bacround_hole.webp"
+      }
+    }
+  }
+}

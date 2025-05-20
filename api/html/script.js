@@ -4,6 +4,8 @@ let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
 
 const ORBIT_PERIOD_MS = 86400000;
+let drawCount = 0;
+let drawInterval;
 
 let zoom = 0.10;
 let offsetX = 0, offsetY = 0;
@@ -76,8 +78,7 @@ tryLoadChunkOverlayScript(); // Trigger once
 // ✅ Declare constants FIRST
 // const ORBIT_PERIOD_MS = 86400000; // 24 hours
 
-let drawCount = 0;
-let drawInterval;
+console.log("tetsing");
 
 // ✅ Define the draw function AFTER constants
 function draw() {

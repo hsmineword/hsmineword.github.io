@@ -3,6 +3,8 @@ const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
 
+const ORBIT_PERIOD_MS = 86400000;
+
 let zoom = 0.10;
 let offsetX = 0, offsetY = 0;
 let drag = false;
@@ -343,7 +345,7 @@ function updateGalaxyObjects(objects) {
 // Track each draw cycle and object placement
 // … all your setup (stars, mapObjects, zoom/pan handlers, etc.) goes here …
 
-const ORBIT_PERIOD_MS = 86400000; // 24h
+// const ORBIT_PERIOD_MS = 86400000; // 24h
 let drawCount = 0;
 let drawInterval;
 

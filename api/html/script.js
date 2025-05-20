@@ -333,37 +333,40 @@ function updateGalaxyObjects(objects) {
 // Track each draw cycle and object placement
 // … all your setup (stars, mapObjects, zoom/pan handlers, etc.) goes here …
 
+const ORBIT_PERIOD_MS = 86400000; // 24h
+let drawCount = 0;
+let drawInterval;
+
+// Main draw function
 function draw() {
-  // reset & clear
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, width, height);
-
-  // pan & zoom
-  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
-  ctx.scale(zoom, zoom);
-
-  // 24 h = 86 400 000 ms per full turn
-  const period = 24 * 60 * 60 * 1000;
-  const time = (Date.now() % period) / period * 2 * Math.PI;
-
-  // persist for other scripts
-  try { localStorage.setItem('_debug_time', time); } catch {}
+  // Avoid NaNs by ensuring math runs every time
+  const time = (Date.now() % ORBIT_PERIOD_MS) / ORBIT_PERIOD_MS * 2 * Math.PI;
   window._op_time = time;
+  try {
+    localStorage.setItem('_debug_time', time);
+  } catch (e) {}
 
+  // Safe cosine/sine
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
-  // draw stars
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, width, height);
+  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
+  ctx.scale(zoom, zoom);
+
+  // Draw stars
   for (const star of stars) {
     const x = star.x * cos - star.y * sin;
     const y = star.x * sin + star.y * cos;
     ctx.beginPath();
     ctx.arc(x, y, star.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
     ctx.fill();
   }
 
-  // position map objects
+  // Draw map objects
   for (const [, obj] of mapObjects) {
     const x = obj._pos.x * cos - obj._pos.y * sin;
     const y = obj._pos.x * sin + obj._pos.y * cos;
@@ -372,20 +375,30 @@ function draw() {
 
     const el = obj._el;
     el.style.left = `${screenX}px`;
-    el.style.top  = `${screenY}px`;
-    el.querySelector('img')
-      .style.transform = `scale(${Math.max(0.5, zoom)})`;
+    el.style.top = `${screenY}px`;
+    el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
+  }
+
+  // Optional: Trigger fix (only if function exists)
+  try {
+    if (typeof separateObjects === 'function') separateObjects();
+  } catch (e) {
+    console.warn("[Draw] separateObjects missing:", e.message);
+  }
+
+  drawCount++;
+  
+  // After 10 frames, switch to slower interval
+  if (drawCount === 10) {
+    clearInterval(drawInterval);
+    drawInterval = setInterval(draw, 60000); // 1 minute
+    console.log("[Draw] Switched to slow interval");
   }
 }
 
-// ——— Warm‑up draws on init ———
-for (let i = 0; i < 3; i++) {
-  draw();
-}
+// Start fast to allow everything to initialize
+drawInterval = setInterval(draw, 100); // ~10 FPS for first second
 
-// ——— Then only re‑draw once per minute ———
-setInterval(draw, 60_000);
-console.log("draw scheduled every 60 000 ms (1 min)");
 
 
 

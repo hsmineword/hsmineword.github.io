@@ -89,6 +89,32 @@ function loadExternalScript() {
 }
 
 loadExternalScript();
+
+
+
+async function playRawMp3(url) {
+  try {
+    const audio = new Audio(url);
+    audio.loop = true;
+    audio.volume = 0.6;
+    audio.muted = true; // muted to allow autoplay
+
+    await audio.play();
+
+    // Unmute after short delay
+    setTimeout(() => {
+      audio.muted = false;
+    }, 500);
+    
+    console.log("Playing raw MP3 from:", url);
+  } catch (err) {
+    console.error("❌ Music autoplay failed:", err.message);
+  }
+}
+
+// Call it with your MP3 URL
+playRawMp3("https://hsmineword.github.io/api/src/music/ost/1/Helldivers%202%20OST%20Galactic%20Map%20Ambience.mp3");
+
 </script>
 </body>
 </html>

@@ -71,28 +71,28 @@ tryLoadChunkOverlayScript(); // Trigger once
 
 
 
+// ✅ Declare constants FIRST
+const ORBIT_PERIOD_MS = 86400000; // 24 hours
 
+let drawCount = 0;
+let drawInterval;
+
+// ✅ Define the draw function AFTER constants
 function draw() {
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
-  ctx.scale(zoom, zoom);
-
-  const mercuryOrbitMs = 86400000; // 7,603,200,000
-const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
-
+  const time = (Date.now() % ORBIT_PERIOD_MS) / ORBIT_PERIOD_MS * 2 * Math.PI;
+  window._op_time = time;
+  try {
+    localStorage.setItem('_debug_time', time);
+  } catch (e) {}
 
   const cos = Math.cos(time);
   const sin = Math.sin(time);
 
-
-  if (loadchunks && chunksOverlayReady && typeof drawChunkOverlays === 'function') {
-  drawChunkOverlays(cos, sin); // Only runs if loaded successfully
-  }
-
-  
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, width, height);
+  ctx.translate(width / 2 + offsetX, height / 2 + offsetY);
+  ctx.scale(zoom, zoom);
 
   for (const star of stars) {
     const x = star.x * cos - star.y * sin;
@@ -103,14 +103,12 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
     ctx.fill();
   }
 
-  for (const [id, obj] of mapObjects) {
+  for (const [, obj] of mapObjects) {
     const x = obj._pos.x * cos - obj._pos.y * sin;
     const y = obj._pos.x * sin + obj._pos.y * cos;
 
     const screenX = x * zoom + width / 2 + offsetX;
     const screenY = y * zoom + height / 2 + offsetY;
-
-      // console.log(`[Draw] ${obj.map_name} at screen coords: (${screenX}, ${screenY})`);
 
     const el = obj._el;
     el.style.left = `${screenX}px`;
@@ -118,9 +116,21 @@ const time = (Date.now() % mercuryOrbitMs) / mercuryOrbitMs * 2 * Math.PI;
     el.querySelector('img').style.transform = `scale(${Math.max(0.5, zoom)})`;
   }
 
-  requestAnimationFrame(draw);
+  try {
+    if (typeof separateObjects === 'function') separateObjects();
+  } catch (e) {}
+
+  drawCount++;
+  if (drawCount === 10) {
+    clearInterval(drawInterval);
+    drawInterval = setInterval(draw, 60000);
+    console.log("[Draw] Switched to slow interval");
+  }
 }
-draw();
+
+// ✅ Start drawing AFTER everything is defined
+drawInterval = setInterval(draw, 100);
+
 
 // Zoom and pan
 // canvas.addEventListener('wheel', e => {

@@ -347,8 +347,8 @@ function updateGalaxyObjects(objects) {
 // … all your setup (stars, mapObjects, zoom/pan handlers, etc.) goes here …
 
 // const ORBIT_PERIOD_MS = 86400000; // 24h
-let drawCount = 0;
-let drawInterval;
+// let drawCount = 0;
+// let drawInterval;
 
 // Main draw function
 function draw() {

@@ -59,34 +59,41 @@
     }
   }
 
-  function moveToResult(direction) {
-    if (results.length === 0) return;
-    currentIndex = (currentIndex + direction + results.length) % results.length;
+function moveToResult(direction) {
+  if (results.length === 0) return;
 
-    const el = results[currentIndex];
-    const obj = [...mapObjects.values()].find(o => o._el === el);
-    if (!obj) return;
+  currentIndex = (currentIndex + direction + results.length) % results.length;
 
-    // Update camera offset to center on object
-    offsetX = -obj._pos.x * zoom;
-    offsetY = -obj._pos.y * zoom;
+  const el = results[currentIndex];
+  const obj = [...mapObjects.values()].find(o => o._el === el);
+  if (!obj) return;
 
-    // Calculate screen position
-  const time = Math.floor(Date.now() / 10000);
-console.log(time);
-    const cos = Math.cos(time);
-    const sin = Math.sin(time);
-    const worldX = obj._pos.x;
-    const worldY = obj._pos.y;
-    const rotatedX = worldX * cos - worldY * sin;
-    const rotatedY = worldX * sin + worldY * cos;
-    const screenX = rotatedX * zoom + canvas.width / 2 + offsetX;
-    const screenY = rotatedY * zoom + canvas.height / 2 + offsetY;
+  // Use the global rotation time to align with the current view
+  const time = window._op_time || 0;
+  const cos = Math.cos(time);
+  const sin = Math.sin(time);
 
-    console.log(`[Search] ${obj.map_name}`);
-    console.log(`Coords: (${worldX.toFixed(2)}, ${worldY.toFixed(2)})`);
-    console.log(`Screen: (${screenX.toFixed(2)}, ${screenY.toFixed(2)})`);
-  }
+  const worldX = obj._pos.x;
+  const worldY = obj._pos.y;
+
+  // Rotate coordinates
+  const rotatedX = worldX * cos - worldY * sin;
+  const rotatedY = worldX * sin + worldY * cos;
+
+  // Set offset so the object will be centered in view
+  offsetX = -rotatedX * zoom;
+  offsetY = -rotatedY * zoom;
+
+  // Log for debugging
+  const screenX = rotatedX * zoom + canvas.width / 2 + offsetX;
+  const screenY = rotatedY * zoom + canvas.height / 2 + offsetY;
+
+  console.log(`[Search] ${obj.map_name}`);
+  console.log(`World: (${worldX.toFixed(2)}, ${worldY.toFixed(2)})`);
+  console.log(`Rotated: (${rotatedX.toFixed(2)}, ${rotatedY.toFixed(2)})`);
+  console.log(`Screen: (${screenX.toFixed(2)}, ${screenY.toFixed(2)})`);
+}
+
 
   input.addEventListener('input', () => {
     const query = input.value.trim().toLowerCase();

@@ -208,3 +208,46 @@ window.createDiscordEmbed = function (data, position) {
   console.log('[Embed Renderer] Triggered');
   showDiscordEmbed(data, position || { x: 20, y: 20 });
 };
+
+
+
+
+
+
+
+
+
+
+console.log("NEWS");
+function news() {
+  const randomStr = Math.random().toString().slice(2);
+  const url = `https://hsmineword.github.io/api/news.json?jam=${randomStr}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
+    })
+    .then(data => {
+      console.log('[News Fetch] Embed data:', data);
+
+      // Define bottom-right corner position
+      const position = {
+        x: window.innerWidth - 340, // 300px embed + padding
+        y: window.innerHeight - 400 // 150px embed + padding
+      };
+
+      if (typeof window.createDiscordEmbed === 'function') {
+        console.log('[News Embed] Renderer found. Showing...');
+        window.createDiscordEmbed(data, position);
+      } else {
+        console.warn('[News Embed] createDiscordEmbed not ready yet.');
+      }
+    })
+    .catch(err => {
+      console.error('[News Fetch] Failed to load news JSON:', err);
+    });
+}
+
+// Immediately invoke
+news();

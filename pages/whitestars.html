@@ -46,6 +46,12 @@
       margin: 20px 0;
       font-size: 1.5em;
     }
+    .status {
+      text-align: center;
+      font-size: 1.2em;
+      color: #00ffff;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -55,6 +61,7 @@
     <div class="box" id="ours"></div>
     <div class="box" id="theirs"></div>
   </div>
+  <div class="status" id="status"></div>
 
   <script>
     function escapeHTML(str) {
@@ -78,14 +85,13 @@
       }
 
       const baseURL = "https://drmineword.github.io/1062014023656292354-database/white_stars/any_federation_corp/stars/";
-      try {
-        const [startRes, endRes] = await Promise.all([
-          fetch(`${baseURL}${matchid}.json`),
-          fetch(`${baseURL}${matchid}-result.json`)
-        ]);
+      const startURL = `${baseURL}${matchid}.json`;
+      const resultURL = `${baseURL}${matchid}-result.json`;
 
+      try {
+        const startRes = await fetch(startURL);
+        if (!startRes.ok) throw new Error("Start data not found");
         const startData = await startRes.json();
-        const endData = await endRes.json();
 
         const ourCorp = escapeHTML(startData.Corporation.CorporationName);
         const theirCorp = escapeHTML(startData.Opponent.CorporationName);
@@ -113,11 +119,19 @@
           </ul>
         `;
 
-        document.getElementById('score').innerText = 
-          `${ourCorp}: ${endData.OurScore} — ${theirCorp}: ${endData.OpponentScore}`;
+        try {
+          const resultRes = await fetch(resultURL);
+          if (!resultRes.ok) throw new Error("Result not ready");
+          const resultData = await resultRes.json();
 
+          document.getElementById('score').innerText = 
+            `${ourCorp}: ${resultData.OurScore} — ${theirCorp}: ${resultData.OpponentScore}`;
+          document.getElementById('status').innerText = "Match ended";
+        } catch {
+          document.getElementById('status').innerText = "Match is still in progress...";
+        }
       } catch (err) {
-        document.body.innerHTML = '<p>Error loading match data.</p>';
+        document.body.innerHTML = '<p>Error loading match data: ' + err.message + '</p>';
         console.error(err);
       }
     }

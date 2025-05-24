@@ -134,6 +134,38 @@
       return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
+
+async function generateBase64Icon(ourCorpID, opponentCorpID) {
+  const templateURL = 'https://hsmineword.github.io/api/src/pages/whitestars/icon_gen.txt';
+
+  try {
+    // Step 1: Fetch the SVG template
+    const response = await fetch(templateURL);
+    if (!response.ok) throw new Error('Failed to fetch SVG template');
+    let svgTemplate = await response.text();
+
+    // Step 2: Replace placeholders with actual IDs
+    svgTemplate = svgTemplate
+      .replace(/\{\$blu_id\}/g, ourCorpID)
+      .replace(/\{\$red_id\}/g, opponentCorpID);
+
+    // Step 3: Base64 encode the SVG content
+    const base64SVG = btoa(unescape(encodeURIComponent(svgTemplate)));
+
+    // Step 4: Create data URI
+    const dataURI = `data:image/svg+xml;base64,${base64SVG}`;
+
+    return dataURI;
+  } catch (error) {
+    console.error('Error generating base64 SVG icon:', error);
+    return null;
+  }
+}
+
+
+
+      
+
     async function loadMatch() {
       const params = new URLSearchParams(window.location.search);
       const matchid = params.get('matchid');
@@ -153,6 +185,16 @@
 
         const ourCorp = escapeHTML(startData.Corporation.CorporationName);
         const theirCorp = escapeHTML(startData.Opponent.CorporationName);
+
+
+          const iconDataURI = await generateBase64Icon(
+  startData.Corporation.CorporationID,
+  startData.Opponent.CorporationID
+);
+if (iconDataURI) {
+  document.getElementById('star-icon').src = iconDataURI;
+}
+
 
         const ourBox = document.getElementById('ours');
         const theirBox = document.getElementById('theirs');

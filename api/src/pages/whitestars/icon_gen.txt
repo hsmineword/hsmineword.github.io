@@ -17,7 +17,7 @@
 
   <!-- Bottom Right Icon -->
   <image 
-   x="125" y="125" width="75" height="75"
+   x="110" y="110" width="90" height="90"
     href="https://ws.tsl.rocks/corp/{$red_id}/favicon.png"
     onerror="this.setAttribute('href', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=')"
   />

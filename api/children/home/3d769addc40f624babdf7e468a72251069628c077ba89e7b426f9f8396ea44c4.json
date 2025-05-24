@@ -1,0 +1,13 @@
+{"id":"MAP_OBJECT_6HSVQE0116B81-F21B-4FA0-9852-3E2F2B9A5B42",
+"heatmaphex":"#ff6600",
+"cords":{"x":-10035,"x_ok":1,"y":13860,"y_ok":1,"_status":"HIT",
+"_index":0},"map_icon":"https://hsmineword.github.io/api/src/Stars/star_yellow.png",
+"map_name":"DrMineword",
+"map_constellation_id":"alpha-03",
+"map_is_anvil":false,"interaction_on_click":{"type":"discord_embed",
+"data":{"title":"Yellow Star Sytem",
+"description":"**Yellow Stars** contain numerous habitable planets and are great for building base infrastructure. Each Empire is assigned its own Yellow Star to establish its base of operations.\nYellow Stars are combat safe. There is no combat between player forces. Ships lost to combat against Cerberus will safely return to a colonized planet.\n\nYou are looking at the Yellow Star of the **Federation Member**",
+"color":16776960,"fields":[{"name":"Owner",
+"value":"DrMineword"},{"name":"Id",
+"value":"3d769addc40f624babdf7e468a72251069628c077ba89e7b426f9f8396ea44c4"},{"name":"Cords",
+"value":"-10035, 13860"}],"image":{"url":"https://hsmineword.github.io/api/src/portraits/portrait_YellowStar.png"}}}}

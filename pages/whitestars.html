@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>White Star Match Info</title>
+  <style>
+    body {
+      background-color: #002b36;
+      color: #e0ffff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+    .box {
+      background-color: #008b8b;
+      border-radius: 10px;
+      padding: 20px;
+      width: 45%;
+    }
+    .title {
+      font-size: 1.2em;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    img.icon {
+      width: 24px;
+      height: 24px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .score {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <h1>White Star Match Details</h1>
+  <div class="score" id="score"></div>
+  <div class="container">
+    <div class="box" id="ours"></div>
+    <div class="box" id="theirs"></div>
+  </div>
 
+  <script>
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, function (m) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        })[m];
+      });
+    }
+
+    async function loadMatch() {
+      const params = new URLSearchParams(window.location.search);
+      const matchid = params.get('matchid');
+      if (!matchid) {
+        document.body.innerHTML = '<p>No match ID provided.</p>';
+        return;
+      }
+
+      const baseURL = "https://drmineword.github.io/1062014023656292354-database/white_stars/any_federation_corp/stars/";
+      try {
+        const [startRes, endRes] = await Promise.all([
+          fetch(`${baseURL}${matchid}.json`),
+          fetch(`${baseURL}${matchid}-result.json`)
+        ]);
+
+        const startData = await startRes.json();
+        const endData = await endRes.json();
+
+        const ourCorp = escapeHTML(startData.Corporation.CorporationName);
+        const theirCorp = escapeHTML(startData.Opponent.CorporationName);
+
+        const ourBox = document.getElementById('ours');
+        const theirBox = document.getElementById('theirs');
+
+        ourBox.innerHTML = `
+          <div class="title">
+            ${ourCorp}
+            <img class="icon" src="https://hsmineword.github.io/api/src/Stars/star_white.png" alt="Star Icon" />
+          </div>
+          <ul>
+            ${startData.OurParticipants.map(p => `<li>${escapeHTML(p.PlayerName)}</li>`).join('')}
+          </ul>
+        `;
+
+        theirBox.innerHTML = `
+          <div class="title">
+            ${theirCorp}
+            <img class="icon" src="https://hsmineword.github.io/api/src/Stars/star_white.png" alt="Star Icon" />
+          </div>
+          <ul>
+            ${startData.OpponentParticipants.map(p => `<li>${escapeHTML(p.PlayerName)}</li>`).join('')}
+          </ul>
+        `;
+
+        document.getElementById('score').innerText = 
+          `${ourCorp}: ${endData.OurScore} — ${theirCorp}: ${endData.OpponentScore}`;
+
+      } catch (err) {
+        document.body.innerHTML = '<p>Error loading match data.</p>';
+        console.error(err);
+      }
+    }
+
+    loadMatch();
+  </script>
+</body>
+</html>

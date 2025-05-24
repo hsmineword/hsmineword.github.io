@@ -1,6 +1,6 @@
-{"id":"MAP_OBJECT_9I7L4FAF61237-C946-4682-8EBE-5F9E03B365F3",
+{"id":"MAP_OBJECT_EF5C18E250120-D6D5-43D1-B68F-DB5EBFC637C7",
 "heatmaphex":"#ff6600",
-"cords":{"x":-9630,"x_ok":1,"y":-1890,"y_ok":1,"_status":"HIT",
+"cords":{"x":-12555,"x_ok":1,"y":-24030,"y_ok":1,"_status":"HIT",
 "_index":0},"map_icon":"https://hsmineword.github.io/api/src/Stars/star_yellow.png",
 "map_name":"Rider21",
 "map_constellation_id":"alpha-03",
@@ -10,4 +10,4 @@
 "color":16776960,"fields":[{"name":"Owner",
 "value":"Rider21"},{"name":"Id",
 "value":"50aed866344b171295978afdc6253211df36cb8e46f4cd2b14eb05c24c455027"},{"name":"Cords",
-"value":"-9630, -1890"}],"image":{"url":"https://hsmineword.github.io/api/src/portraits/portrait_YellowStar.png"}}}}
+"value":"-12555, -24030"}],"image":{"url":"https://hsmineword.github.io/api/src/portraits/portrait_YellowStar.png"}}}}

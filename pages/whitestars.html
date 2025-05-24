@@ -192,16 +192,23 @@ async function generateBase64Icon(ourCorpID, opponentCorpID) {
   startData.Opponent.CorporationID
 );
 if (iconDataURI) {
-  document.getElementById('icon').src = iconDataURI;
+  
+const iconBox = document.querySelector('.icon-box');
 
- // Set the page favicon dynamically
-  let favicon = document.querySelector("link[rel~='icon']");
-  if (!favicon) {
-    favicon = document.createElement('link');
-    favicon.rel = 'icon';
-    document.head.appendChild(favicon);
-  }
-  favicon.href = iconDataURI;
+// Clear any existing content
+iconBox.innerHTML = '';
+
+// Create the iframe
+const iframe = document.createElement('iframe');
+iframe.src = iconDataURI;
+iframe.width = '48';
+iframe.height = '48';
+iframe.style.border = 'none';
+iframe.style.display = 'block';
+iframe.style.margin = '0 auto';
+
+// Append the iframe to the icon box
+iconBox.appendChild(iframe);
 
     
 }

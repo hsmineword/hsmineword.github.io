@@ -149,29 +149,25 @@ canvas.addEventListener('wheel', e => {
   const minZoom = 0.00000000000000000000000000000007;
   const maxZoom = 1.210000000000005;
 
+  // World position currently at screen center
+  const cameraX = -offsetX / zoom;
+  const cameraY = -offsetY / zoom;
+
   const prevZoom = zoom;
   if (e.deltaY < 0) {
-    zoom *= zoomFactor; // Zoom in
+    zoom *= zoomFactor;
   } else {
-    zoom /= zoomFactor; // Zoom out
+    zoom /= zoomFactor;
   }
 
   // Clamp zoom
   zoom = Math.min(maxZoom, Math.max(minZoom, zoom));
 
-  // Calculate center of screen in world coordinates before zoom
-  const centerWorldX = (-offsetX + width / 2) / prevZoom;
-  const centerWorldY = (-offsetY + height / 2) / prevZoom;
+  // After zoom, recalculate offset so that camera stays on same world coords
+  offsetX = -cameraX * zoom;
+  offsetY = -cameraY * zoom;
 
-  // Calculate new screen coordinates for same world point after zoom
-  const newCenterScreenX = centerWorldX * zoom;
-  const newCenterScreenY = centerWorldY * zoom;
-
-  // Adjust offsets to keep centerWorld point at screen center
-  offsetX = -newCenterScreenX + width / 2;
-  offsetY = -newCenterScreenY + height / 2;
-
-  console.log(`Zoom: ${zoom.toFixed(6)}, Camera World Pos: (${centerWorldX.toFixed(2)}, ${centerWorldY.toFixed(2)})`);
+  console.log(`Zoom: ${zoom.toFixed(6)} | Camera center (world): x=${cameraX.toFixed(2)}, y=${cameraY.toFixed(2)}`);
 });
 
 

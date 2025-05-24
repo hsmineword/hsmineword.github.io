@@ -1,13 +1,45 @@
-{"id":"MAP_OBJECT_61OU3C5FB47B9-CE02-4575-829F-DD92D86D9922",
-"heatmaphex":"#ff6600",
-"cords":{"x":10260,"x_ok":1,"y":-17775,"y_ok":1,"_status":"HIT",
-"_index":0},"map_icon":"https://hsmineword.github.io/api/src/Stars/star_yellow.png",
-"map_name":"brightknight",
-"map_constellation_id":"alpha-03",
-"map_is_anvil":false,"interaction_on_click":{"type":"discord_embed",
-"data":{"title":"Yellow Star Sytem",
-"description":"**Yellow Stars** contain numerous habitable planets and are great for building base infrastructure. Each Empire is assigned its own Yellow Star to establish its base of operations.\nYellow Stars are combat safe. There is no combat between player forces. Ships lost to combat against Cerberus will safely return to a colonized planet.\n\nYou are looking at the Yellow Star of the **Federation Member**",
-"color":16776960,"fields":[{"name":"Owner",
-"value":"brightknight"},{"name":"Id",
-"value":"e65e9a7af457b9d367f500a51d883df58e35d00ef6cfa404dc13f274c18c2d17"},{"name":"Cords",
-"value":"10260, -17775"}],"image":{"url":"https://hsmineword.github.io/api/src/portraits/portrait_YellowStar.png"}}}}
+{
+    "id": "MAP_OBJECT_61OU3C5FB47B9-CE02-4575-829F-DD92D86D9922",
+    "heatmaphex": "#ff6600",
+    "cords": {
+        "x": 10260,
+        "x_ok": 1,
+        "y": -17775,
+        "y_ok": 1,
+        "_status": "HIT",
+        "_index": 0
+    },
+    "map_icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjIuODggMTIyLjg4Ij48ZGVmcz48c3R5bGU+LmF7ZmlsbDojMWQ3YWQ5O2ZpbGwtcnVsZTpldmVub2RkO30uYntmaWxsOiNmZmMyMjA7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJhIiBkPSJNMzguMjQsMGg0Ni40YTM4LjM2LDM4LjM2LDAsMCwxLDM4LjI0LDM4LjI0djQ2LjRhMzguMzYsMzguMzYsMCwwLDEtMzguMjQsMzguMjRIMzguMjRBMzguMzYsMzguMzYsMCwwLDEsMCw4NC42NFYzOC4yNEEzOC4zNiwzOC4zNiwwLDAsMSwzOC4yNCwwWiIvPjxwYXRoIGNsYXNzPSJiIiBkPSJNNjEuNDMsMjAuODJjLTMuMDksMC01LjU0LDEuNzMtNS41NCwzLjgzTDU3Ljc3LDQ1LjljLjIsMS4yOCwxLjc3LDIuMjcsMy42NywyLjI3czMuNDYtMSwzLjY3LTIuMjdMNjcsMjQuNjVjMC0yLjEtMi40Ny0zLjgyLTUuNTYtMy44MlptLTMwLjU4LDE3YTYsNiwwLDAsMC00LjU4LDMuMjZjLTEuNTUsMi42OC0xLjI4LDUuNjcuNTMsNi43MmwxOS4zNCw5YzEuMjEuNDUsMi44NS0uNDEsMy44LTJoMGMxLTEuNjUuODgtMy41LS4xMi00LjMyTDMyLjM1LDM4LjI0YTIuODYsMi44NiwwLDAsMC0xLjUtLjM3Wm02MS4xNywwYTIuODYsMi44NiwwLDAsMC0xLjUuMzdMNzMuMDUsNTAuNDljLTEsLjgyLTEuMDcsMi42Ny0uMTIsNC4zMmgwYy45NSwxLjY0LDIuNTksMi41LDMuOCwybDE5LjM0LTljMS44My0xLjA1LDIuMDktNCwuNTUtNi43MkE2LDYsMCwwLDAsOTIsMzcuODdabS00NS4xNSwyOGExLjczLDEuNzMsMCwwLDAtLjcyLjEyTDI2LjgxLDc1Yy0xLjgyLDEuMDYtMi4wOSw0LS41NCw2LjczczQuMjcsMy45NCw2LjA4LDIuODlMNDkuODIsNzIuNGMxLS44MywxLjA4LTIuNjguMTMtNC4zMmgwYTMuOTQsMy45NCwwLDAsMC0zLjA4LTIuMTdabTI5LjE0LDBhMy45NCwzLjk0LDAsMCwwLTMuMDgsMi4xN2gwYy0xLDEuNjQtLjg3LDMuNDkuMTMsNC4zMkw5MC41Myw4NC42NGMxLjgxLDEsNC41My0uMjIsNi4wOS0yLjg5czEuMjgtNS42Ny0uNTUtNi43M0w3Ni43Myw2NmExLjc2LDEuNzYsMCwwLDAtLjcyLS4xMlpNNjEuNDMsNzQuNzJjLTEuODksMC0zLjQ2LDEtMy42NiwyLjI2TDU1Ljg5LDk4LjIzYzAsMi4xLDIuNDYsMy44Myw1LjU1LDMuODNTNjcsMTAwLjMzLDY3LDk4LjIzTDY1LjExLDc3Yy0uMjEtMS4yOC0xLjc3LTIuMjYtMy42Ny0yLjI2WiIvPjwvc3ZnPg==",
+    "map_name": "brightknight",
+    "map_constellation_id": "alpha-03",
+    "map_is_anvil": false,
+    "interaction_on_click": {
+        "type": "discord_embed",
+        "data": {
+            "title": "Yellow Star Sytem",
+            "description": "**Yellow Stars** contain numerous habitable planets and are great for building base infrastructure. Each Empire is assigned its own Yellow Star to establish its base of operations.\nYellow Stars are combat safe. There is no combat between player forces. Ships lost to combat against Cerberus will safely return to a colonized planet.\n\nYou are looking at the Yellow Star of the **Federation Member**",
+            "color": 16776960,
+            "fields": [
+                {
+                    "name": "Owner",
+                    "value": "brightknight"
+                },
+                {
+                    "name": "Id",
+                    "value": "e65e9a7af457b9d367f500a51d883df58e35d00ef6cfa404dc13f274c18c2d17"
+                },
+                {
+                    "name": "Cords",
+                    "value": "10260, -17775"
+                },
+                {
+                    "name": "Important Facilities",
+                    "value": "\n- Space Walmart"
+                }
+            ],
+            "image": {
+                "url": "https://hsmineword.github.io/api/src/portraits/portrait_YellowStar.png"
+            }
+        }
+    }
+}

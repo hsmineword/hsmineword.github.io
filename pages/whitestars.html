@@ -149,6 +149,11 @@ async function generateBase64Icon(ourCorpID, opponentCorpID) {
       .replace(/\{\$blu_id\}/g, ourCorpID)
       .replace(/\{\$red_id\}/g, opponentCorpID);
 
+      svgTemplate = svgTemplate.replace(
+  /<svg([^>]+)>/,
+  `<svg$1 viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">`
+);
+
     // Step 3: Base64 encode the SVG content
     const base64SVG = btoa(unescape(encodeURIComponent(svgTemplate)));
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>White Star Match Info</title>
   <style>
     body {
@@ -42,14 +42,14 @@
     }
 
     .icon-box img {
-      width: 64px;
-      height: 64px;
+      width: 32px;
+      height: 32px;
     }
 
     ul {
       list-style: none;
       padding: 0;
-      text-align: center;
+      text-align: left;
     }
 
     li {
@@ -62,11 +62,19 @@
       font-size: 1.5em;
     }
 
-    .status {
-      text-align: center;
-      font-size: 1.2em;
-      color: #00ffff;
-      margin-top: 10px;
+    .log-box {
+      background-color: #00ced1;
+      color: #003b3b;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 30px;
+      font-family: monospace;
+      white-space: pre-line;
+    }
+
+    .log-box-title {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -82,7 +90,7 @@
 
     <div class="box" id="theirs"></div>
   </div>
-  <div class="status" id="status"></div>
+  <div class="log-box" id="status"></div>
 
   <script>
     function escapeHTML(str) {
@@ -95,6 +103,20 @@
           "'": '&#039;'
         })[m];
       });
+    }
+
+    function formatTime(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleString();
+    }
+
+    function formatDuration(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
     async function loadMatch() {
@@ -122,29 +144,53 @@
 
         ourBox.innerHTML = `
           <div class="title">${ourCorp}</div>
-          <ul>
-            ${startData.OurParticipants.map(p => `<li>${escapeHTML(p.PlayerName)}</li>`).join('')}
-          </ul>
+          <ul>${startData.OurParticipants.map(p => `<li>${escapeHTML(p.PlayerName)}</li>`).join('')}</ul>
         `;
-
         theirBox.innerHTML = `
           <div class="title">${theirCorp}</div>
-          <ul>
-            ${startData.OpponentParticipants.map(p => `<li>${escapeHTML(p.PlayerName)}</li>`).join('')}
-          </ul>
+          <ul>${startData.OpponentParticipants.map(p => `<li>${escapeHTML(p.PlayerName)}</li>`).join('')}</ul>
         `;
+
+        const discoveredTime = new Date(startData.Timestamp);
+        const endTime = new Date(discoveredTime.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 days
+
+        let resultData;
+        let matchEnded = false;
 
         try {
           const resultRes = await fetch(resultURL);
           if (!resultRes.ok) throw new Error("Result not ready");
-          const resultData = await resultRes.json();
+          resultData = await resultRes.json();
+          matchEnded = true;
+        } catch {}
 
+        const statusBox = document.getElementById('status');
+        let log = `## Star Log:\n[${formatTime(discoveredTime)}]: White Star Discovered`;
+
+        if (matchEnded) {
           document.getElementById('score').innerText =
             `${ourCorp}: ${resultData.OurScore} — ${theirCorp}: ${resultData.OpponentScore}`;
-          document.getElementById('status').innerText = "Match ended";
-        } catch {
-          document.getElementById('status').innerText = "Match is still in progress...";
+          const endDate = new Date(resultData.Timestamp);
+          log += `\n[${formatTime(endDate)}]: White Star Exploded`;
+        } else {
+          const updateCountdown = () => {
+            const now = new Date();
+            const remaining = endTime - now;
+            if (remaining <= 0) {
+              log += `\n[Expired]: White Star should have ended.`;
+              clearInterval(interval);
+            } else {
+              const remainingStr = formatDuration(remaining);
+              log = `## Star Log:\n[${formatTime(discoveredTime)}]: White Star Discovered\n[Time Left]: ${remainingStr}\n[Est. End]: ${formatTime(endTime)}`;
+              statusBox.innerText = log;
+            }
+          };
+
+          updateCountdown();
+          const interval = setInterval(updateCountdown, 1000);
         }
+
+        statusBox.innerText = log;
       } catch (err) {
         document.body.innerHTML = '<p>Error loading match data: ' + err.message + '</p>';
         console.error(err);

@@ -142,37 +142,36 @@ drawInterval = setInterval(draw, 100);
 //  zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
 //});
 
+
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
   const minZoom = 0.00000000000000000000000000000007;
   const maxZoom = 1.210000000000005;
 
-  // Mouse position relative to canvas
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-
-  // Convert screen coords to world coords
-  const worldX = (mouseX - width / 2 - offsetX) / zoom;
-  const worldY = (mouseY - height / 2 - offsetY) / zoom;
-
-  // Update zoom
   const prevZoom = zoom;
   if (e.deltaY < 0) {
-    zoom *= zoomFactor;
+    zoom *= zoomFactor; // Zoom in
   } else {
-    zoom /= zoomFactor;
+    zoom /= zoomFactor; // Zoom out
   }
 
   // Clamp zoom
   zoom = Math.min(maxZoom, Math.max(minZoom, zoom));
 
-  // Adjust offset so the worldX/worldY stays under the mouse
-  offsetX += (worldX * (zoom - prevZoom));
-  offsetY += (worldY * (zoom - prevZoom));
+  // Calculate center of screen in world coordinates before zoom
+  const centerWorldX = (-offsetX + width / 2) / prevZoom;
+  const centerWorldY = (-offsetY + height / 2) / prevZoom;
 
-  console.log('Zoom:', zoom);
+  // Calculate new screen coordinates for same world point after zoom
+  const newCenterScreenX = centerWorldX * zoom;
+  const newCenterScreenY = centerWorldY * zoom;
+
+  // Adjust offsets to keep centerWorld point at screen center
+  offsetX = -newCenterScreenX + width / 2;
+  offsetY = -newCenterScreenY + height / 2;
+
+  console.log(`Zoom: ${zoom.toFixed(6)}, Camera World Pos: (${centerWorldX.toFixed(2)}, ${centerWorldY.toFixed(2)})`);
 });
 
 

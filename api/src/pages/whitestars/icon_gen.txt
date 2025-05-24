@@ -10,15 +10,15 @@
 
   <!-- Top Left Icon -->
   <image 
-  x="0" y="150" width="50" height="50"
-    href="https://ws.tsl.rocks/corp/{$blu_id}/favicon.ico"
+  x="0" y="0" width="50" height="50"
+    href="https://ws.tsl.rocks/corp/{$blu_id}/favicon.png"
     onerror="this.setAttribute('href', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=')"
   />
 
   <!-- Bottom Right Icon -->
   <image 
-    x="150" y="0" width="50" height="50"
-    href="https://ws.tsl.rocks/corp/{$red_id}/favicon.ico"
+    x="150" y="150" width="50" height="50"
+    href="https://ws.tsl.rocks/corp/{$red_id}/favicon.png"
     onerror="this.setAttribute('href', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=')"
   />
 </svg>

@@ -136,7 +136,7 @@
 
 
 async function generateBase64Icon(ourCorpID, opponentCorpID) {
-  const templateURL = 'https://hsmineword.github.io/api/src/pages/whitestars/icon_gen.txt';
+  const templateURL = 'https://hsmineword.github.io/api/src/pages/whitestars/icon_gen.txt?v=2';
 
   try {
     // Step 1: Fetch the SVG template
@@ -148,9 +148,7 @@ async function generateBase64Icon(ourCorpID, opponentCorpID) {
     svgTemplate = svgTemplate
   .replace(/\{\$blu_id\}/g, ourCorpID)
   .replace(/\{\$red_id\}/g, opponentCorpID)
-  // Remove duplicate width/height attributes like width="100%" and height="100%"
-  .replace(/(<svg[^>]*?)\s+width="100%"/, '$1') // remove width="100%" from <svg>
-  .replace(/(<svg[^>]*?)\s+height="100%"/, '$1'); // remove height="100%" from <svg>
+ 
 
 
     // Step 3: Base64 encode the SVG content

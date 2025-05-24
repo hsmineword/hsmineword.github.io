@@ -10,14 +10,14 @@
 
   <!-- Top Left Icon -->
   <image 
- x="0" y="0" width="60" height="60"
+ x="0" y="0" width="75" height="75"
     href="https://ws.tsl.rocks/corp/{$blu_id}/favicon.png"
     onerror="this.setAttribute('href', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=')"
   />
 
   <!-- Bottom Right Icon -->
   <image 
-   x="140" y="140" width="60" height="60"
+   x="125" y="125" width="75" height="75"
     href="https://ws.tsl.rocks/corp/{$red_id}/favicon.png"
     onerror="this.setAttribute('href', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=')"
   />

@@ -192,7 +192,18 @@ async function generateBase64Icon(ourCorpID, opponentCorpID) {
   startData.Opponent.CorporationID
 );
 if (iconDataURI) {
-  document.getElementById('star-icon').src = iconDataURI;
+  document.getElementById('icon').src = iconDataURI;
+
+ // Set the page favicon dynamically
+  let favicon = document.querySelector("link[rel~='icon']");
+  if (!favicon) {
+    favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    document.head.appendChild(favicon);
+  }
+  favicon.href = iconDataURI;
+}
+    
 }
 
 

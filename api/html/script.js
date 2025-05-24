@@ -145,22 +145,36 @@ drawInterval = setInterval(draw, 100);
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
   const zoomFactor = 1.1;
-  //const minZoom = 0.07;
-  //const maxZoom = 1.210000000000005;
-const minZoom = 0.00000000000000000000000000000007;
-const maxZoom = 1.210000000000005;
+  const minZoom = 0.00000000000000000000000000000007;
+  const maxZoom = 1.210000000000005;
 
+  // Mouse position relative to canvas
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  // Convert screen coords to world coords
+  const worldX = (mouseX - width / 2 - offsetX) / zoom;
+  const worldY = (mouseY - height / 2 - offsetY) / zoom;
+
+  // Update zoom
+  const prevZoom = zoom;
   if (e.deltaY < 0) {
-    zoom *= zoomFactor; // zoom in
+    zoom *= zoomFactor;
   } else {
-    zoom /= zoomFactor; // zoom out
+    zoom /= zoomFactor;
   }
 
-  // Clamp zoom between minZoom and maxZoom
+  // Clamp zoom
   zoom = Math.min(maxZoom, Math.max(minZoom, zoom));
+
+  // Adjust offset so the worldX/worldY stays under the mouse
+  offsetX += (worldX * (zoom - prevZoom));
+  offsetY += (worldY * (zoom - prevZoom));
 
   console.log('Zoom:', zoom);
 });
+
 
 
 canvas.addEventListener('mousedown', e => {
